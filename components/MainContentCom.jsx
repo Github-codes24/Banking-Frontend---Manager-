@@ -8,11 +8,13 @@ function MainContentCom({data}) {
     title: "Agent List",
     url:"/manager/agentslistpage",
     icon: false, 
-    inpul: true,
+    // inpul: true,
+    btn: true,
+    btntitel: "createAgent",
    }
   return (
     <>
-     <div className="flex-1 p-6 ml-56">
+     <div className="flex-1 p-6 ml-56 bg-[#ffffff]">
         <NavBarSmall data={naveData}/>
         <div className="bg-[#fff7f4] p-4 rounded shadow">
 

@@ -4,12 +4,19 @@ import { FaArrowLeft} from "react-icons/fa";
 import Button from './Button';
 
 function NavBarSmall({data}) {
-  const btnData1 = {
-    route: '/manager/yesterdaypaymentlistpage',
-    text: "See Yesterday's List",
-    fill: true,
-  }
+  let btnData1 = {
+  route: '/manager/yesterdaypaymentlistpage',
+  text: "See Yesterday's List",
+  fill: true,
+}
 
+if (data?.btntitel === "createAgent") {
+  btnData1 = {
+    ...btnData1,
+    route: "/manager/createagentpage",
+    text: "Create Agent"
+  }
+}
   return (
     <>
       <div className="bg-[#fff7f4] p-4 rounded shadow flex justify-between items-center  pb-3 mb-6 flex-1">

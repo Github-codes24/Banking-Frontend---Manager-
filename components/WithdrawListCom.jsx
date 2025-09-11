@@ -67,12 +67,12 @@ async function  WithdrawListCom() {
                 // </div>
                  <tr key={index}>
                 <td className="border border-gray-200 p-2">{index + 1}</td>
-                <td className="border border-gray-200 p-2">{formatDate(item.transactionDate) }</td>
+                <td className="border border-gray-200 p-2">{formatDate(item?.transactionDate) }</td>
                
                 <td className="border border-gray-200 p-2">  <Link href={"/manager/withdrawdetailspage"} >DUJDCBC544SG </Link></td>
                
-                <td className="border border-gray-200 p-2">{item.customerId.name}<br></br> {item.customerId.contact}</td>
-                <td className="border border-gray-200 p-2">{item.amount}</td>
+                <td className="border border-gray-200 p-2">{item?.customerId?.name}<br></br> {item?.customerId?.contact}</td>
+                <td className="border border-gray-200 p-2">{item?.amount}</td>
                 <td className="border border-gray-200 p-2">
                     <div className='mb-2'>
                     <Button data={btnData1} />

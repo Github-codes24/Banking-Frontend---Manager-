@@ -11,7 +11,7 @@ function Button({data}) {
         {data.text || "Home"}  
         </Link>): (<Link
         href={data.route || "/"}
-        className="bg-red-600 text-white px-17 py-2 rounded-md hover:bg-red-700 transition">
+        className={`${data.text==="Create Agent"?"bg-yellow-300 hover:bg-yellow-500":"bg-red-600 hover:bg-red-700"} text-white px-17 py-2 rounded-md  transition`}>
         {data.text || "Home"}  
         </Link>)}
     </div>

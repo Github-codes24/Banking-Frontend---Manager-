@@ -1,6 +1,9 @@
 import React from 'react'
 import SideBarComp from './SideBarComp'
 import NavBarSmall from './NavBarSmall'
+import { FaEye} from "react-icons/fa";
+import Link from 'next/link';
+
 function AgentDetalsCom() {
    const naveData ={
     title: "Agent Details",
@@ -35,24 +38,31 @@ function AgentDetalsCom() {
             </div>
              {/* Payment Details */}
           <div className="mt-6  rounded bg-white ">
-            <h3 className="font-semibold p-4 border-b">Payment Details</h3>
+            <h3 className="font-semibold p-4 border-b">Costomer List</h3>
             <table className="w-full border text-sm">
               <thead className="bg-gray-100">
                 <tr>
                   <th className="border px-3 py-2">SR. NO.</th>
-                  <th className="border px-3 py-2">Date</th>
-                  <th className="border px-3 py-2">Amount(₹)</th>
-                  <th className="border px-3 py-2">Payment Mode</th>
-                  <th className="border px-3 py-2">Transaction ID</th>
+                  <th className="border px-3 py-2">Costomer</th>
+                  <th className="border px-3 py-2">Phone Number</th>
+                  <th className="border px-3 py-2">Email ID</th>
+                  <th className="border px-3 py-2">Address</th>
+                  <th className="border px-3 py-2">Action</th>
+
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="border px-3 py-2">3</td>
+                  <td className="border px-3 py-2">1</td>
                   <td className="border px-3 py-2">03/04/2025</td>
                   <td className="border px-3 py-2">3,20,000</td>
                   <td className="border px-3 py-2">Cash</td>
                   <td className="border px-3 py-2">NIL</td>
+                  <td className="border px-3 py-2  text-center  align-middle text-red-500 cursor-pointer ">
+                     <Link href={`/manager/costomerdetalspage`}>
+                      <FaEye className='mx-auto' />
+                     </Link>
+                  </td>
                 </tr>
                 <tr className="bg-[#fff7f4]">
                   <td className="border px-3 py-2">2</td>
@@ -60,6 +70,11 @@ function AgentDetalsCom() {
                   <td className="border px-3 py-2">3,20,000</td>
                   <td className="border px-3 py-2">Cash</td>
                   <td className="border px-3 py-2">NIL</td>
+                  <td className="border px-3 py-2  text-center  align-middle text-red-500 cursor-pointer  ">
+                     <Link href={`/manager/costomerdetalspage`}>
+                      <FaEye className='mx-auto' />
+                     </Link>
+                  </td>
                 </tr>
               </tbody>
             </table>

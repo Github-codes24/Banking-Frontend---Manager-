@@ -1,6 +1,8 @@
 import React from 'react'
 import SideBarComp from './SideBarComp'
 import NavBarSmall from './NavBarSmall'
+import Link from 'next/link'
+import Image from 'next/image'
 
 function ProfileCom() {
  const naveData ={
@@ -27,7 +29,9 @@ function ProfileCom() {
         <div className="bg-[#fff] p-6 rounded-lg   max-w-full">
           {/* Profile Image Placeholder */}
           <div className="flex flex-col ">
-            <div className="w-20 h-20 rounded-full border-2 border-red-500 mb-4"></div>
+            <div className="w-20 h-20 rounded-full border-2 border-red-500 mb-4">
+              <Image src={"/img/ProfileImage.png"} height={100} width={100} alt="ProfileImage"/>
+            </div>
           </div>
 
           <div className="space-y-4 text-sm">
@@ -46,9 +50,11 @@ function ProfileCom() {
             <div className="flex gap-4 items-center">
               <p className="font-semibold w-40">Password:</p>
               <p>•••••••</p>
+              <Link className='ml-auto' href={"/manager/passwordpopup"}>
               <button className="ml-auto border border-red-500 text-red-500 px-3 py-1 rounded hover:bg-red-100">
                 Change Password
               </button>
+              </Link>
             </div>
           </div>
 
