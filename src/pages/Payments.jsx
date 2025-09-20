@@ -84,20 +84,26 @@ export default function Payments() {
   }, [fetchData]);
 
   // Accept transaction API call and optimistic update
-  const handleAccept = async (id, status) => {
-    try {
-      body = { status, managerId: manager._id }
-      await axios.post(`${import.meta.env.VITE_API_URL}/transactionSchemes/transaction/approvedReject/${id}`, body);
+ const handleAccept = async (id, status) => {
+  try {
+    const confirm = window.confirm(`Are you sure you want to ${status} this transaction?`);
+    if (!confirm) return; // ❌ stop if user cancels
 
-      setData((prev) =>
-        prev.map((trx) =>
-          trx._id === id ? { ...trx, status: "approved" } : trx
-        )
-      );
-    } catch (err) {
-      alert("Failed to accept transaction");
-    }
-  };
+    const body = { status, managerId: manager._id };
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/transactionSchemes/transaction/approvedReject/${id}`,
+      body
+    );
+
+    setData((prev) =>
+      prev.map((trx) =>
+        trx._id === id ? { ...trx, status } : trx
+      )
+    );
+  } catch (err) {
+    alert("Failed to accept transaction");
+  }
+};
 
 
 

@@ -2,40 +2,47 @@ import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { useForm, Controller } from "react-hook-form";
 
 const EditAgent = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // ✅ get agent id from URL
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    contact: "",
-    email: "",
-    gender: "",
-    address: "",
-    password: "",
-    managerId: "",
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+    control,
+  } = useForm({
+    defaultValues: {
+      name: "",
+      contact: "",
+      email: "",
+      gender: "",
+      address: "",
+      password: "",
+      managerId: "",
+    },
   });
 
-  const [loading, setLoading] = useState(true);
-//   const [managers, setManagers] = useState([]); // ✅ manager list
-  const [showPassword, setShowPassword] = useState(false); // ✅ toggle state
-
-  // 🔹 Fetch agent data
   useEffect(() => {
+    if (!id) return;
+    setLoading(true);
     axios
       .get(`${import.meta.env.VITE_API_URL}/agent/${id}`)
       .then((res) => {
         const agent = res.data.data || res.data;
-        setFormData({
+        reset({
           name: agent.name || "",
           email: agent.email || "",
           contact: agent.contact || "",
           address: agent.address || "",
           gender: agent.gender || "",
           managerId: agent.managerId?._id || "",
-          password: "",
+          password: "", // password left blank for optional change
         });
       })
       .catch((err) => {
@@ -43,46 +50,21 @@ const EditAgent = () => {
         alert("Failed to load agent data ❌");
       })
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, reset]);
 
-  // 🔹 Fetch managers list
-//   useEffect(() => {
-//     axios
-//       .get(apiManagerUrl)
-//       .then((res) => {
-//         setManagers(res.data.data || res.data);
-//       })
-//       .catch((err) => {
-//         console.error("Error fetching managers:", err);
-//       });
-//   }, []);
-
-  // 🔹 Handle input change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // 🔹 Save (PUT API)
-  const handleSave = async () => {
+  const onSubmit = async (data) => {
     try {
       const payload = {
-        name: formData.name,
-        email: formData.email,
-        contact: formData.contact,
-        address: formData.address,
-        gender: formData.gender,
-        managerId: formData.managerId,
+        name: data.name,
+        email: data.email,
+        contact: data.contact,
+        address: data.address,
+        gender: data.gender,
+        managerId: data.managerId,
       };
-
-      if (formData.password !== "") {
-        payload.password = formData.password;
+      if (data.password && data.password.trim() !== "") {
+        payload.password = data.password;
       }
-
-      console.log("Sending payload:", payload);
 
       await axios.put(`${import.meta.env.VITE_API_URL}/agent/${id}`, payload);
       alert("Agent updated successfully ✅");
@@ -93,134 +75,210 @@ const EditAgent = () => {
     }
   };
 
-  if (loading) return <p className="text-center text-gray-500">Loading...</p>;
+  if (loading)
+    return (
+      <p className="text-center text-gray-500 py-10">Loading agent data...</p>
+    );
 
   return (
-    <div>
+    <div className="max-w-3xl mx-auto p-4">
       {/* Header */}
-      <div className="flex items-center justify-between bg-[#fefaf5] p-4 rounded">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between bg-[#fefaf5] p-4 rounded mb-6 shadow-sm">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => navigate(-1)}
-            className="text-black p-1 border-2 rounded-4xl"
+            className="text-black p-2 border-2 rounded-full hover:bg-gray-200 transition"
+            aria-label="Go back"
           >
             <FaArrowLeft />
           </button>
-          <h2 className="text-lg font-semibold">View/Edit Agent</h2>
+          <h2 className="text-xl font-semibold">Edit Agent</h2>
         </div>
         <button
-          onClick={handleSave}
-          className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-5 py-2 rounded"
+          type="submit"
+          form="edit-agent-form"
+          disabled={isSubmitting}
+          className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-6 py-2 rounded transition disabled:opacity-60"
         >
-          Update
+          {isSubmitting ? "Updating..." : "Update"}
         </button>
       </div>
 
       {/* Form */}
-      <div className="bg-yellow-50 p-6 mt-6 mx-auto rounded shadow-sm max-w-3xl">
-        <form className="space-y-4">
-          {/* Agent Name */}
-          <div className="flex items-center">
-            <label className="w-40 font-medium text-sm">Agent Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 px-3 py-2 rounded bg-gray-100"
-            />
-          </div>
+      <form
+        id="edit-agent-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-yellow-50 p-6 rounded shadow-sm space-y-6"
+        noValidate
+      >
+        {/* Agent Name */}
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label
+            htmlFor="name"
+            className="sm:w-40 font-medium text-sm mb-1 sm:mb-0"
+          >
+            Agent Name<span className="text-red-600">*</span>
+          </label>
+          <input
+            id="name"
+            type="text"
+            {...register("name", {
+              required: "Agent name is required",
+              minLength: { value: 2, message: "Name must be at least 2 characters" },
+            })}
+            className={`flex-1 border px-3 py-2 rounded bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
+              errors.name ? "border-red-500" : "border-gray-300"
+            }`}
+            aria-invalid={errors.name ? "true" : "false"}
+            aria-describedby="name-error"
+          />
+        </div>
+        {errors.name && (
+          <p id="name-error" className="text-red-600 text-sm mt-1 sm:ml-40">
+            {errors.name.message}
+          </p>
+        )}
 
-          {/* Email */}
-          <div className="flex items-center">
-            <label className="w-40 font-medium text-sm">Email Address</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 px-3 py-2 rounded bg-gray-100"
-            />
-          </div>
+        {/* Email */}
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label
+            htmlFor="email"
+            className="sm:w-40 font-medium text-sm mb-1 sm:mb-0"
+          >
+            Email Address<span className="text-red-600">*</span>
+          </label>
+          <input
+            id="email"
+            type="email"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "Email is invalid",
+              },
+            })}
+            className={`flex-1 border px-3 py-2 rounded bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
+              errors.email ? "border-red-500" : "border-gray-300"
+            }`}
+            aria-invalid={errors.email ? "true" : "false"}
+            aria-describedby="email-error"
+          />
+        </div>
+        {errors.email && (
+          <p id="email-error" className="text-red-600 text-sm mt-1 sm:ml-40">
+            {errors.email.message}
+          </p>
+        )}
 
-          {/* Contact */}
-          <div className="flex items-center">
-            <label className="w-40 font-medium text-sm">Contact No.</label>
-            <input
-              type="text"
-              name="contact"
-              value={formData.contact}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 px-3 py-2 rounded bg-gray-100"
-            />
-          </div>
+        {/* Contact */}
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label
+            htmlFor="contact"
+            className="sm:w-40 font-medium text-sm mb-1 sm:mb-0"
+          >
+            Contact No.<span className="text-red-600">*</span>
+          </label>
+          <input
+            id="contact"
+            type="text"
+            {...register("contact", {
+              required: "Contact number is required",
+              pattern: {
+                value: /^[0-9]{10}$/,
+                message: "Contact number must be 10 digits",
+              },
+            })}
+            className={`flex-1 border px-3 py-2 rounded bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
+              errors.contact ? "border-red-500" : "border-gray-300"
+            }`}
+            aria-invalid={errors.contact ? "true" : "false"}
+            aria-describedby="contact-error"
+          />
+        </div>
+        {errors.contact && (
+          <p id="contact-error" className="text-red-600 text-sm mt-1 sm:ml-40">
+            {errors.contact.message}
+          </p>
+        )}
 
-          {/* Address */}
-          <div className="flex items-center">
-            <label className="w-40 font-medium text-sm">Address</label>
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 px-3 py-2 rounded bg-gray-100"
-            />
-          </div>
+        {/* Address */}
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label
+            htmlFor="address"
+            className="sm:w-40 font-medium text-sm mb-1 sm:mb-0"
+          >
+            Address
+          </label>
+          <input
+            id="address"
+            type="text"
+            {...register("address")}
+            className="flex-1 border px-3 py-2 rounded bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 border-gray-300"
+          />
+        </div>
 
-          {/* ✅ Gender Dropdown */}
-          <div className="flex items-center">
-            <label className="w-40 font-medium text-sm">Gender</label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 px-3 py-2 rounded bg-gray-100"
-            >
-              <option value="">-- Select Gender --</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
+        {/* Gender */}
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label
+            htmlFor="gender"
+            className="sm:w-40 font-medium text-sm mb-1 sm:mb-0"
+          >
+            Gender
+          </label>
+          <select
+            id="gender"
+            {...register("gender", { required: "Gender is required" })}
+            className={`flex-1 border px-3 py-2 rounded bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
+              errors.gender ? "border-red-500" : "border-gray-300"
+            }`}
+            aria-invalid={errors.gender ? "true" : "false"}
+            aria-describedby="gender-error"
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        {errors.gender && (
+          <p id="gender-error" className="text-red-600 text-sm mt-1 sm:ml-40">
+            {errors.gender.message}
+          </p>
+        )}
 
-          {/* ✅ Manager Dropdown */}
-          {/* <div className="flex items-center">
-            <label className="w-40 font-medium text-sm">Manager</label>
-            <select
-              name="managerId"
-              value={formData.managerId}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 px-3 py-2 rounded bg-gray-100"
-            >
-              <option value="">-- Select Manager --</option>
-              {managers.map((mng) => (
-                <option key={mng._id} value={mng._id}>
-                  {mng.name}
-                </option>
-              ))}
-            </select>
-          </div> */}
-
-          {/* ✅ Password with eye toggle */}
-          <div className="flex items-center relative">
-            <label className="w-40 font-medium text-sm">Password</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 px-3 py-2 rounded bg-gray-100 pr-10"
-              placeholder="Enter new password"
-            />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 cursor-pointer text-gray-500"
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-        </form>
-      </div>
+        {/* Password with eye toggle (optional, no validation) */}
+        <div className="flex flex-col sm:flex-row sm:items-center relative">
+          <label
+            htmlFor="password"
+            className="sm:w-40 font-medium text-sm mb-1 sm:mb-0"
+          >
+            Password
+          </label>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <>
+                <input
+                  {...field}
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter new password (optional)"
+                  className="flex-1 border px-3 py-2 rounded pr-10 bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 border-gray-300"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </>
+            )}
+          />
+        </div>
+      </form>
     </div>
   );
 };

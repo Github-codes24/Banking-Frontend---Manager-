@@ -357,7 +357,7 @@ function ViewCoustomer() {
                             <h3 className="text-2xl font-bold text-gray-800">Loan </h3>
                         </div>
 
-                        {customer?.rdSchemes?.length > 0 &&
+                        {customer?.loans?.length > 0 &&
                             <div>
                                 <Link
                                     to={`/coustomers/paymentdetails/${id}/LOAN`}

@@ -1,54 +1,35 @@
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import { useForm } from "react-hook-form";
 
 const AddAgent = () => {
   const navigate = useNavigate();
   const manager = JSON.parse(localStorage.getItem("user"));
-
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    contact: "",
-    address: "",
-    password: "",
-    gender: "",
-    managerId: manager?._id || "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      contact: "",
+      address: "",
+      password: "",
+      gender: "",
+      managerId: manager?._id || "",
+    },
   });
 
-  const [errors, setErrors] = useState({});
-
-  // Validate form data before submitting
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Agent name is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.email))
-      newErrors.email = "Email is invalid";
-    if (!formData.contact.trim()) newErrors.contact = "Contact number is required";
-    if (!formData.password) newErrors.password = "Password is required";
-    if (!formData.gender) newErrors.gender = "Gender is required";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" }); // Clear error on change
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
+  const onSubmit = async (data) => {
     setLoading(true);
-
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/agent`, formData);
+      await axios.post(`${import.meta.env.VITE_API_URL}/agent`, data);
       alert("Agent added successfully ✅");
       navigate(-1);
     } catch (error) {
@@ -76,7 +57,7 @@ const AddAgent = () => {
         <button
           type="submit"
           form="add-agent-form"
-          disabled={loading}
+          disabled={loading || isSubmitting}
           className={`bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-6 py-2 rounded transition disabled:opacity-60`}
         >
           {loading ? "Saving..." : "Save"}
@@ -86,7 +67,7 @@ const AddAgent = () => {
       {/* Form */}
       <form
         id="add-agent-form"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="bg-yellow-50 p-6 rounded shadow-sm space-y-6"
         noValidate
       >
@@ -101,9 +82,10 @@ const AddAgent = () => {
           <input
             id="name"
             type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
+            {...register("name", {
+              required: "Agent name is required",
+              minLength: { value: 2, message: "Name must be at least 2 characters" },
+            })}
             className={`flex-1 border px-3 py-2 rounded bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
               errors.name ? "border-red-500" : "border-gray-300"
             }`}
@@ -113,7 +95,7 @@ const AddAgent = () => {
         </div>
         {errors.name && (
           <p id="name-error" className="text-red-600 text-sm mt-1 sm:ml-40">
-            {errors.name}
+            {errors.name.message}
           </p>
         )}
 
@@ -128,9 +110,13 @@ const AddAgent = () => {
           <input
             id="email"
             type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "Email is invalid",
+              },
+            })}
             className={`flex-1 border px-3 py-2 rounded bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
               errors.email ? "border-red-500" : "border-gray-300"
             }`}
@@ -140,7 +126,7 @@ const AddAgent = () => {
         </div>
         {errors.email && (
           <p id="email-error" className="text-red-600 text-sm mt-1 sm:ml-40">
-            {errors.email}
+            {errors.email.message}
           </p>
         )}
 
@@ -155,9 +141,13 @@ const AddAgent = () => {
           <input
             id="contact"
             type="tel"
-            name="contact"
-            value={formData.contact}
-            onChange={handleChange}
+            {...register("contact", {
+              required: "Contact number is required",
+              pattern: {
+                value: /^[0-9]{10}$/,
+                message: "Contact number must be 10 digits",
+              },
+            })}
             className={`flex-1 border px-3 py-2 rounded bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
               errors.contact ? "border-red-500" : "border-gray-300"
             }`}
@@ -167,7 +157,7 @@ const AddAgent = () => {
         </div>
         {errors.contact && (
           <p id="contact-error" className="text-red-600 text-sm mt-1 sm:ml-40">
-            {errors.contact}
+            {errors.contact.message}
           </p>
         )}
 
@@ -182,9 +172,7 @@ const AddAgent = () => {
           <input
             id="address"
             type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
+            {...register("address")}
             className="flex-1 border px-3 py-2 rounded bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 border-gray-300"
           />
         </div>
@@ -200,9 +188,10 @@ const AddAgent = () => {
           <input
             id="password"
             type={showPassword ? "text" : "password"}
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
+            {...register("password", {
+              required: "Password is required",
+              minLength: { value: 6, message: "Password must be at least 6 characters" },
+            })}
             className={`flex-1 border px-3 py-2 rounded pr-10 bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
               errors.password ? "border-red-500" : "border-gray-300"
             }`}
@@ -220,7 +209,7 @@ const AddAgent = () => {
         </div>
         {errors.password && (
           <p id="password-error" className="text-red-600 text-sm mt-1 sm:ml-40">
-            {errors.password}
+            {errors.password.message}
           </p>
         )}
 
@@ -234,18 +223,14 @@ const AddAgent = () => {
           </label>
           <select
             id="gender"
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
+            {...register("gender", { required: "Gender is required" })}
             className={`flex-1 border px-3 py-2 rounded bg-white transition focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
               errors.gender ? "border-red-500" : "border-gray-300"
             }`}
             aria-invalid={errors.gender ? "true" : "false"}
             aria-describedby="gender-error"
           >
-            <option value="" disabled>
-              Select Gender
-            </option>
+            <option value="">Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Other">Other</option>
@@ -253,7 +238,7 @@ const AddAgent = () => {
         </div>
         {errors.gender && (
           <p id="gender-error" className="text-red-600 text-sm mt-1 sm:ml-40">
-            {errors.gender}
+            {errors.gender.message}
           </p>
         )}
       </form>
