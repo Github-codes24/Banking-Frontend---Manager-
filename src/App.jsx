@@ -17,6 +17,18 @@ import ViewCoustomer from './components/ViewCoustomer';
 import PaymentDetails from './components/PaymentDetails';
 import PaymentDetails1 from './components/PaymentDetails1';
 import ProfilePage from './components/ProfilePage';
+import AreaManager from './pages/AreaManager';
+import EditAreaManager from './components/EditAreaManager';
+import ViewAreaManager from './components/ViewAreaManager';
+import AddAreaManager from './components/AddAreaManager';
+import CustomerList from './pages/CustomerList';
+import AddCustomer from './components/AddCustomer';
+import CustomerDetails from './components/CustomerDetails';
+import EditCustomer from './components/EditCustomer';
+import CreateFDForm from './components/CreateFDForm';
+import CreateRDForm from './components/CreateRdForm';
+import CreateLoan from './components/CreateLoan';
+import CreatePigmyForm from './components/CreatePigmyForm';
 
 
 function App() {
@@ -43,6 +55,126 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <Agent />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/area-manager"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <AreaManager />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customers"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CustomerList />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customers/add"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <AddCustomer />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-fd/:customerId"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CreateFDForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-rd/:customerId"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CreateRDForm/>
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-loan/:customerId"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CreateLoan/>
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-pigmy/:customerId"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CreatePigmyForm/>
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customers/view/:id"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CustomerDetails />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customers/edit/:id"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <EditCustomer />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/area-manager/edit/:id"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <EditAreaManager />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/area-manager/add"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <AddAreaManager />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/area-manager/view/:id"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ViewAreaManager />
                 </Layout>
               </ProtectedRoute>
             }

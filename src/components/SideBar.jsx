@@ -15,6 +15,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 const navItems = [
   { name: "Agents", icon: <FaUser />, path: "/" },
+  { name: "Customers", icon: <FaUser />, path: "/customers" },
+  { name: "Area Managers", icon: <FaUser />, path: "/area-manager" },
   { name: "Payments", icon: <FaUserTie />, path: "/payments" },
 
 ];

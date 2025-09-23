@@ -22,14 +22,15 @@ export default function Agent() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
-
+  const [areaManagerId, setAreaManagerId] = useState("");
   const manager = JSON.parse(localStorage.getItem("user"))
   // fetch data
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/manager/agents/${manager._id}`, {
-        params: { search, page, limit },
+        params: { search, page, limit, areaManagerId }
+
       });
 
       if (response.data?.data) {
@@ -47,9 +48,21 @@ export default function Agent() {
     }
   };
 
+  const [areaManagers, setAreaManagers] = useState([]);
+  const managerId = JSON.parse(localStorage.getItem("user"))._id
+  const fetchAreaManagers = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`);
+      setAreaManagers(res.data.data || []);
+    } catch (error) {
+      console.error("Error fetching area managers:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
-  }, [search, page, limit]);
+    fetchAreaManagers();
+  }, [search, page, limit, areaManagerId]);
 
   // delete
   const handleDelete = async () => {
@@ -77,51 +90,51 @@ export default function Agent() {
   }
 
 
-const handelBlock = async (agentId) => {
-  try {
-    const confirmBlock = window.confirm("Are you sure you want to block this agent?");
-    if (!confirmBlock) return; // stop if cancelled
+  const handelBlock = async (agentId) => {
+    try {
+      const confirmBlock = window.confirm("Are you sure you want to block this agent?");
+      if (!confirmBlock) return; // stop if cancelled
 
-    const res = await axios.post(
-      `${import.meta.env.VITE_API_URL}/manager/agent/block/${agentId}`
-    );
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/manager/agent/block/${agentId}`
+      );
 
-    if (res.data.success) {
-      fetchData()
-      alert("Agent blocked successfully");
-      // 🔄 optionally refetch agents list here
-    } else {
-      alert(res.data.message || "Failed to block agent");
+      if (res.data.success) {
+        fetchData()
+        alert("Agent blocked successfully");
+        // 🔄 optionally refetch agents list here
+      } else {
+        alert(res.data.message || "Failed to block agent");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong while blocking agent");
     }
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong while blocking agent");
-  }
-};
+  };
 
-const handelUnBlock = async (agentId) => {
-  try {
-    const confirmUnblock = window.confirm("Are you sure you want to unblock this agent?");
-    if (!confirmUnblock) return; // stop if cancelled
+  const handelUnBlock = async (agentId) => {
+    try {
+      const confirmUnblock = window.confirm("Are you sure you want to unblock this agent?");
+      if (!confirmUnblock) return; // stop if cancelled
 
-    const res = await axios.post(
-      `${import.meta.env.VITE_API_URL}/manager/agent/unblock/${agentId}`
-    );
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/manager/agent/unblock/${agentId}`
+      );
 
-    if (res.data.success) {
-      fetchData()
-      alert("Agent unblocked successfully");
-      // 🔄 optionally refetch agents list here
-    } else {
-      alert(res.data.message || "Failed to unblock agent");
+      if (res.data.success) {
+        fetchData()
+        alert("Agent unblocked successfully");
+        // 🔄 optionally refetch agents list here
+      } else {
+        alert(res.data.message || "Failed to unblock agent");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong while unblocking agent");
     }
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong while unblocking agent");
-  }
-};
+  };
 
-  
+
   return (
     <div>
       {/* Header */}
@@ -136,7 +149,7 @@ const handelUnBlock = async (agentId) => {
       </div>
 
       {/* Search */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex gap-3 items-center mb-4">
         <input
           type="text"
           value={search}
@@ -147,6 +160,22 @@ const handelUnBlock = async (agentId) => {
           placeholder="Search agent (name/contact)"
           className="border border-gray-400 px-3 py-1 rounded w-64"
         />
+
+        <select
+          value={areaManagerId}
+          onChange={(e) => {
+            setAreaManagerId(e.target.value);
+            setPage(1);
+          }}
+          className="border border-gray-400 px-3 py-1 rounded"
+        >
+          <option value="">All Area Managers</option>
+          {areaManagers.map((am) => (
+            <option key={am._id} value={am._id}>
+              {am.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Table */}
@@ -190,7 +219,7 @@ const handelUnBlock = async (agentId) => {
                         <FaPen size={14} />
                       </Link>
                       <button
-                       title="Delete Agent"
+                        title="Delete Agent"
                         onClick={() => {
                           setDeleteId(cust._id);
                           setShowDeleteModal(true);
@@ -200,22 +229,22 @@ const handelUnBlock = async (agentId) => {
                         <FaTrash size={14} />
                       </button>
                       {cust.isActive ? (
-  <button
-    onClick={() => handelBlock(cust._id)}
-    className="bg-red-500 hover:bg-red-600 text-white p-2 rounded"
-    title="Block Agent"
-  >
-    <FaBan size={16} />
-  </button>
-) : (
-  <button
-    onClick={() => handelUnBlock(cust._id)}
-    className="bg-green-500 hover:bg-green-600 text-white p-2 rounded"
-    title="Unblock Agent"
-  >
-    <FaUnlock size={16} />
-  </button>
-)}
+                        <button
+                          onClick={() => handelBlock(cust._id)}
+                          className="bg-red-500 hover:bg-red-600 text-white p-2 rounded"
+                          title="Block Agent"
+                        >
+                          <FaBan size={16} />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handelUnBlock(cust._id)}
+                          className="bg-green-500 hover:bg-green-600 text-white p-2 rounded"
+                          title="Unblock Agent"
+                        >
+                          <FaUnlock size={16} />
+                        </button>
+                      )}
 
 
                     </div>
@@ -229,7 +258,7 @@ const handelUnBlock = async (agentId) => {
                 </td>
               </tr>
             )}
-{loading && <p className="text-center text-gray-500">Loading data...</p>}
+            {loading && <p className="text-center text-gray-500">Loading data...</p>}
           </tbody>
         </table>
       </div>
@@ -239,9 +268,8 @@ const handelUnBlock = async (agentId) => {
         <button
           disabled={page === 1}
           onClick={() => setPage((p) => p - 1)}
-          className={`px-3 py-1 border rounded ${
-            page === 1 ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className={`px-3 py-1 border rounded ${page === 1 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
         >
           Prev
         </button>
@@ -251,9 +279,8 @@ const handelUnBlock = async (agentId) => {
         <button
           disabled={page === totalPages}
           onClick={() => setPage((p) => p + 1)}
-          className={`px-3 py-1 border rounded ${
-            page === totalPages ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className={`px-3 py-1 border rounded ${page === totalPages ? "opacity-50 cursor-not-allowed" : ""
+            }`}
         >
           Next
         </button>

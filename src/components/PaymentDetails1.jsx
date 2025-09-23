@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { FaArrowLeft } from "react-icons/fa6";
 
 const PaymentDetails1 = () => {
   const [paymentData, setTransactions] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+const navigate = useNavigate()
   const { id } = useParams();
 
   const fetchTransaction = async () => {
@@ -54,9 +55,17 @@ const PaymentDetails1 = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-4xl mx-auto bg-white shadow rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">
+       <div className="flex gap-2 items-center mb-3">
+          <button
+                            onClick={() => navigate(-1)}
+                            className="text-black p-1 border-2 rounded-4xl"
+                        >
+                            <FaArrowLeft />
+                        </button>
+        <h2 className="text-2xl font-semibold text-gray-800  border-b pb-2">
           Payment Details
         </h2>
+       </div>
 
         {/* Customer Details */}
         <div className="mb-6">

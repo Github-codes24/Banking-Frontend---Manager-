@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
-import { FaEye } from "react-icons/fa6";
+import { FaArrowLeft, FaEye } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
 export default function Payments() {
@@ -122,9 +122,10 @@ export default function Payments() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
+    <div className="max-w-7xl mx-auto p-4">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex gap-2 items-center mb-6">
+       
         <h2 className="text-2xl font-bold">Payments</h2>
       </div>
 
