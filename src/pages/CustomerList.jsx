@@ -6,10 +6,8 @@ import { Link } from "react-router-dom";
 import ShortPopup from "../modal/ShortPopup";
 import DeletePopup from "../modal/DeletePopup";
 
-
 export default function CustomerList() {
   const [customers, setCustomers] = useState([]);
-//   const [managers, setManagers] = useState([]);
   const [agents, setAgents] = useState([]);
   const [areaManagers, setAreaManagers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,9 +15,9 @@ export default function CustomerList() {
 
   // Filters & search
   const [search, setSearch] = useState("");
-//   const [selectedManager, setSelectedManager] = useState("");
   const [selectedAgent, setSelectedAgent] = useState("");
   const [selectedAreaManager, setSelectedAreaManager] = useState("");
+  const [schemeType, setSchemeType] = useState(""); // ✅ new
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -34,19 +32,24 @@ export default function CustomerList() {
   const [showSortModal, setShowSortModal] = useState(false);
 
   const token = localStorage.getItem("token");
-const managerId = JSON.parse(localStorage.getItem("user"))._id
-  
+  const managerId = JSON.parse(localStorage.getItem("user"))._id;
+
   const fetchAgents = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/agent?managerId=${managerId}`);
       setAgents(res.data.data || []);
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+    }
   };
+
   const fetchAreaManagers = async () => {
     try {
-       const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`);
       setAreaManagers(res.data.data || []);
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Fetch Customers
@@ -57,9 +60,10 @@ const managerId = JSON.parse(localStorage.getItem("user"))._id
       const params = [];
 
       if (search.trim()) params.push(`search=${encodeURIComponent(search.trim())}`);
-       params.push(`managerId=${managerId}`);
+      params.push(`managerId=${managerId}`);
       if (selectedAgent) params.push(`agentId=${selectedAgent}`);
       if (selectedAreaManager) params.push(`areaManagerId=${selectedAreaManager}`);
+      if (schemeType) params.push(`schemeType=${schemeType}`); // ✅ new
       if (startDate) params.push(`fromDate=${startDate}`);
       if (endDate) params.push(`toDate=${endDate}`);
 
@@ -75,20 +79,31 @@ const managerId = JSON.parse(localStorage.getItem("user"))._id
     }
   };
 
-  useEffect(() => {  fetchAgents(); fetchAreaManagers(); fetchCustomers(); }, []);
+  useEffect(() => {
+    fetchAgents();
+    fetchAreaManagers();
+    fetchCustomers();
+  }, []);
+
   useEffect(() => {
     const delay = setTimeout(() => fetchCustomers(), 500);
     return () => clearTimeout(delay);
-  }, [search, selectedAgent, selectedAreaManager, startDate, endDate, page, limit]);
+  }, [search, selectedAgent, selectedAreaManager, schemeType, startDate, endDate, page, limit]); // ✅ added schemeType
 
-  const confirmDelete = (id) => { setDeleteId(id); setShowDeleteModal(true); };
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
   const handleDelete = async () => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/customer/${deleteId}`);
-      setCustomers(prev => prev.filter(c => c._id !== deleteId));
+      setCustomers((prev) => prev.filter((c) => c._id !== deleteId));
       setShowDeleteModal(false);
       setDeleteId(null);
-    } catch { alert("Failed to delete customer ❌"); }
+    } catch {
+      alert("Failed to delete customer ❌");
+    }
   };
 
   if (loading) return <p className="text-center text-gray-500">Loading customers...</p>;
@@ -105,34 +120,75 @@ const managerId = JSON.parse(localStorage.getItem("user"))._id
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-2 mb-4">
-        <input type="text" placeholder="Search By Name or Contact" value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
-          className="border border-gray-400 px-3 py-1 rounded w-full sm:w-64" />
+      <div className="flex flex-col sm:flex-row flex-wrap gap-2 mb-4">
+        <input
+          type="text"
+          placeholder="Search By Name or Contact"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+          className="border border-gray-400 px-3 py-1 rounded w-full sm:w-64"
+        />
 
-        {/* <select value={selectedManager} onChange={e => { setSelectedManager(e.target.value); setPage(1); }}
-          className="border border-gray-400 px-3 py-1 rounded w-full sm:w-64">
-          <option value="">All Managers</option>
-          {managers.map(m => <option key={m._id} value={m._id}>{m.name}</option>)}
-        </select> */}
-
-        <select value={selectedAreaManager} onChange={e => { setSelectedAreaManager(e.target.value); setPage(1); }}
-          className="border border-gray-400 px-3 py-1 rounded w-full sm:w-64">
+        <select
+          value={selectedAreaManager}
+          onChange={(e) => {
+            setSelectedAreaManager(e.target.value);
+            setPage(1);
+          }}
+          className="border border-gray-400 px-3 py-1 rounded w-full sm:w-64"
+        >
           <option value="">All Area Managers</option>
-          {areaManagers.map(am => <option key={am._id} value={am._id}>{am.name}</option>)}
+          {areaManagers.map((am) => (
+            <option key={am._id} value={am._id}>
+              {am.name}
+            </option>
+          ))}
         </select>
 
-        <select value={selectedAgent} onChange={e => { setSelectedAgent(e.target.value); setPage(1); }}
-          className="border border-gray-400 px-3 py-1 rounded w-full sm:w-64">
+        <select
+          value={selectedAgent}
+          onChange={(e) => {
+            setSelectedAgent(e.target.value);
+            setPage(1);
+          }}
+          className="border border-gray-400 px-3 py-1 rounded w-full sm:w-64"
+        >
           <option value="">All Agents</option>
-          {agents.map(a => <option key={a._id} value={a._id}>{a.name}</option>)}
+          {agents.map((a) => (
+            <option key={a._id} value={a._id}>
+              {a.name}
+            </option>
+          ))}
         </select>
 
-        <button onClick={() => setShowSortModal(true)}
-          className="sm:ml-auto flex items-center gap-1 text-sm border border-yellow-400 text-yellow-600 px-3 py-1 rounded hover:bg-yellow-100">
+        {/* ✅ New schemeType filter */}
+        <select
+          value={schemeType}
+          onChange={(e) => {
+            setSchemeType(e.target.value);
+            setPage(1);
+          }}
+          className="border border-gray-400 px-3 py-1 rounded w-full sm:w-64"
+        >
+          <option value="">All Scheme Types</option>
+          <option value="pigmy">Pigmy</option>
+          <option value="loan">Loan</option>
+          <option value="rd">RD</option>
+          <option value="fd">FD</option>
+        </select>
+
+        <button
+          onClick={() => setShowSortModal(true)}
+          className="sm:ml-auto flex items-center gap-1 text-sm border border-yellow-400 text-yellow-600 px-3 py-1 rounded hover:bg-yellow-100"
+        >
           Sort By
         </button>
       </div>
 
+      
       {/* Table */}
       <div className="bg-white rounded shadow-sm overflow-x-auto">
         <table className="min-w-full text-sm text-left">
@@ -186,8 +242,15 @@ const managerId = JSON.parse(localStorage.getItem("user"))._id
       </div>
 
       {/* Modals */}
-      <DeletePopup show={showDeleteModal} onClose={()=>setShowDeleteModal(false)} onDelete={handleDelete} />
-      <ShortPopup show={showSortModal} onClose={()=>setShowSortModal(false)} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
+      <DeletePopup show={showDeleteModal} onClose={() => setShowDeleteModal(false)} onDelete={handleDelete} />
+      <ShortPopup
+        show={showSortModal}
+        onClose={() => setShowSortModal(false)}
+        startDate={startDate}
+        endDate={endDate}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+      />
     </div>
   );
 }

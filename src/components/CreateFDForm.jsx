@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 export default function CreateFDForm() {
 
-    const {customerId} = useParams()
+  const { customerId } = useParams()
   const [formData, setFormData] = useState({
     fdTenure: '',
     fdTenureType: 'month',
@@ -22,7 +22,7 @@ export default function CreateFDForm() {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
@@ -41,7 +41,7 @@ export default function CreateFDForm() {
       newErrors.fdTenure = 'FD Tenure must be greater than 0';
     }
 
-   
+
 
     if (!formData.fdDepositAmount) {
       newErrors.fdDepositAmount = 'Deposit Amount is required';
@@ -53,61 +53,67 @@ export default function CreateFDForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  
-const Navigate = useNavigate()
-const handleSubmit = async (e) => {
-  e.preventDefault();
 
-  if (!validateForm()) {
-    return;
-  }
+  const Navigate = useNavigate()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  setIsSubmitting(true);
-
-  try {
-    console.log("Submitting FD:", formData);
-
-    // API call to create FD
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/customer/createFD/${customerId}`,  // <-- replace with your actual endpoint
-      formData,
-     
-    );
-
-    if (response.data.success) {
-      alert("Fixed Deposit created successfully!");
-      // Reset form
-      setFormData({
-        fdTenure: "",
-        fdTenureType: "month",
-        type: "standeredRd",
- 
-        fdDepositAmount: "",
-      });
-
-      Navigate(-1)
-    } else {
-      alert(response.data.message || "Failed to create Fixed Deposit.");
+    if (!validateForm()) {
+      return;
     }
-  } catch (error) {
-    console.error("Error creating FD:", error);
-    alert(
-      error.response?.data?.message ||
+
+    setIsSubmitting(true);
+
+    try {
+      console.log("Submitting FD:", formData);
+
+      // API call to create FD
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/customer/createFD/${customerId}`,  // <-- replace with your actual endpoint
+        formData,
+
+      );
+
+      if (response.data.success) {
+        alert("Fixed Deposit created successfully!");
+        // Reset form
+        setFormData({
+          fdTenure: "",
+          fdTenureType: "month",
+          type: "standeredRd",
+
+          fdDepositAmount: "",
+        });
+
+        Navigate(-1)
+      } else {
+        alert(response.data.message || "Failed to create Fixed Deposit.");
+      }
+    } catch (error) {
+      console.error("Error creating FD:", error);
+      alert(
+        error.response?.data?.message ||
         "Failed to create Fixed Deposit. Please try again."
-    );
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Create Fixed Deposit</h2>
-        <p className="text-gray-600">Fill in the details to create a new Fixed Deposit scheme</p>
-      </div>
 
+      <div className="mb-6 flex items-center gap-4">
+        <button
+          type="button"
+          onClick={() => Navigate(-1)}
+          className="flex items-center gap-2 px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-gray-700"
+        >
+          ← Back
+        </button>
+        <h2 className="text-2xl font-bold text-gray-800">Create Fixed Deposit</h2>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* FD Tenure */}
 
@@ -121,9 +127,8 @@ const handleSubmit = async (e) => {
             name="fdTenure"
             value={formData.fdTenure}
             onChange={handleChange}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.fdTenure ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.fdTenure ? 'border-red-500' : 'border-gray-300'
+              }`}
             placeholder="Enter tenure (e.g., 36)"
           />
           {errors.fdTenure && (
@@ -201,9 +206,8 @@ const handleSubmit = async (e) => {
             name="fdDepositAmount"
             value={formData.fdDepositAmount}
             onChange={handleChange}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.fdDepositAmount ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.fdDepositAmount ? 'border-red-500' : 'border-gray-300'
+              }`}
             placeholder="Enter deposit amount (e.g., 1500000)"
           />
           {errors.fdDepositAmount && (
@@ -221,11 +225,10 @@ const handleSubmit = async (e) => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`flex-1 px-6 py-3 rounded-lg font-medium transition-colors ${
-              isSubmitting
+            className={`flex-1 px-6 py-3 rounded-lg font-medium transition-colors ${isSubmitting
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700 text-white'
-            }`}
+              }`}
           >
             {isSubmitting ? (
               <div className="flex items-center justify-center">
@@ -236,7 +239,7 @@ const handleSubmit = async (e) => {
               'Create Fixed Deposit'
             )}
           </button>
-          
+
           <button
             type="button"
             onClick={() => window.history.back()}

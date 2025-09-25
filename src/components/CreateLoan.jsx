@@ -89,13 +89,18 @@ export default function CreateLoan() {
     }
   };
 
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Create Loan</h2>
-        <p className="text-gray-600">
-          Fill in the details to create a new loan for the customer
-        </p>
+      <div className="mb-6 flex items-center gap-4">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-gray-700"
+        >
+          ← Back
+        </button>
+        <h2 className="text-2xl font-bold text-gray-800">Create Loan Account</h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">

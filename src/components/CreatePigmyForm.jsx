@@ -76,7 +76,16 @@ export default function CreatePigmyForm() {
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Create Pigmy Account</h2>
+       <div className="mb-6 flex items-center gap-4">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-gray-700"
+        >
+          ← Back
+        </button>
+        <h2 className="text-2xl font-bold text-gray-800">Create Pigmy  Account</h2>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Type */}
