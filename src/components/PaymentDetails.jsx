@@ -14,7 +14,7 @@ function PaymentDetails() {
   const [page, setPage] = useState(1);
   const [limit] = useState(10); // fixed page size, can make dropdown
   const [total, setTotal] = useState(0);
-
+const token = localStorage.getItem("token");
   useEffect(() => {
     const fetchTransaction = async () => {
       try {
@@ -23,7 +23,13 @@ function PaymentDetails() {
           `${import.meta.env.VITE_API_URL}/transactionSchemes/transactions`,
           {
             params: { customerId, schemeType, page, limit },
-          }
+
+             
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+          
         );
 
         setTransactions(res.data.transactions || []);

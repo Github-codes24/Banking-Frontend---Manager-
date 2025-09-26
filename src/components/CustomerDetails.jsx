@@ -16,12 +16,17 @@ function CustomerDetails() {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+ const token = localStorage.getItem("token")
 
     const fetchDetails = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/customer/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/customer/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+
+          },
+        });
         if (res.data.success) {
           setCustomer(res.data.data); // customer info
           setAccounts(res.data.data.accounts || []); // accounts list
@@ -98,9 +103,13 @@ function CustomerDetails() {
             {/* Customer Information */}
             <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
               <div className="flex items-center mb-6">
-                <div className="bg-orange-100 p-3 rounded-full mr-4">
-                  <FaUser className="text-orange-600 text-2xl" />
-                </div>
+                         <div className="bg-orange-100 p-1 rounded-full mr-4 w-20 h-20 flex items-center justify-center overflow-hidden">
+  <img
+    src={customer?.picture}
+    alt="Profile"
+    className="w-full h-full object-cover rounded-full"
+  />
+</div>
                 <h2 className="text-2xl font-bold text-gray-800">Customer Information</h2>
               </div>
 

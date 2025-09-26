@@ -14,13 +14,18 @@ function ViewCoustomer() {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const token = localStorage.getItem("token")
   // ✅ Fetch customer details
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/customer/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/customer/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+
+          },
+        });
         if (res.data.success) {
           setCustomer(res.data.data); // customer info
           setAccounts(res.data.data.accounts || []); // accounts list
@@ -86,9 +91,13 @@ function ViewCoustomer() {
             {/* Customer Information */}
             <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
               <div className="flex items-center mb-6">
-                <div className="bg-orange-100 p-3 rounded-full mr-4">
-                  <FaUser className="text-orange-600 text-2xl" />
-                </div>
+                        <div className="bg-orange-100 p-1 rounded-full mr-4 w-20 h-20 flex items-center justify-center overflow-hidden">
+  <img
+    src={customer?.picture}
+    alt="Profile"
+    className="w-full h-full object-cover rounded-full"
+  />
+</div>
                 <h2 className="text-2xl font-bold text-gray-800">Customer Information</h2>
               </div>
 
@@ -454,10 +463,10 @@ function ViewCoustomer() {
                             <span className="text-sm font-medium text-gray-600">Status</span>
                             <span
                               className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${fd.fdAccountStatus === "Active"
-                                  ? "bg-green-200 text-green-800"
-                                  : fd.fdAccountStatus === "Matured"
-                                    ? "bg-blue-200 text-blue-800"
-                                    : "bg-red-200 text-red-800"
+                                ? "bg-green-200 text-green-800"
+                                : fd.fdAccountStatus === "Matured"
+                                  ? "bg-blue-200 text-blue-800"
+                                  : "bg-red-200 text-red-800"
                                 }`}
                             >
                               {fd.fdAccountStatus || "Unknown"}
@@ -616,7 +625,7 @@ function ViewCoustomer() {
 
 
                   <div className="mt-6 flex justify-left text-left">
-                    
+
                     <RDEmiPayModal rd={rd} customerId={customer._id} />
                   </div>
                 </div>

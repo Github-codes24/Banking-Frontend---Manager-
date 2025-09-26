@@ -61,7 +61,7 @@ export default function RDEmiPayModal({ rd, customerId }) {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+const token = localStorage.getItem("token");
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -74,7 +74,13 @@ export default function RDEmiPayModal({ rd, customerId }) {
 
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/transactionSchemes/rdTransaction`,
-        formData
+        formData,
+         {
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+        
       );
 
       if (response.data.success) {

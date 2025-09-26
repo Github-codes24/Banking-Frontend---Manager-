@@ -36,7 +36,12 @@ export default function CustomerList() {
 
   const fetchAgents = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/agent?managerId=${managerId}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/agent?managerId=${managerId}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+
+                },
+            });
       setAgents(res.data.data || []);
     } catch (err) {
       console.error(err);
@@ -45,7 +50,12 @@ export default function CustomerList() {
 
   const fetchAreaManagers = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+
+                },
+            });
       setAreaManagers(res.data.data || []);
     } catch (err) {
       console.error(err);
@@ -97,7 +107,12 @@ export default function CustomerList() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/customer/${deleteId}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/customer/${deleteId}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+
+                },
+            });
       setCustomers((prev) => prev.filter((c) => c._id !== deleteId));
       setShowDeleteModal(false);
       setDeleteId(null);

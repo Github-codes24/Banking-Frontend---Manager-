@@ -15,7 +15,7 @@ export default function CreateFDForm() {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const token = localStorage.getItem("token");
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -71,7 +71,12 @@ export default function CreateFDForm() {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/customer/createFD/${customerId}`,  // <-- replace with your actual endpoint
         formData,
-
+        
+ {
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.data.success) {

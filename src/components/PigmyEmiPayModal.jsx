@@ -30,7 +30,7 @@ export default function PigmyEmiPayModal({ pigmy, customerId }) {
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
-
+const token = localStorage.getItem("token");
   const validateForm = () => {
     const newErrors = {};
     if (!formData.pigMyAccountNumber) newErrors.pigMyAccountNumber = 'Pigmy Account Number is required';
@@ -48,7 +48,12 @@ export default function PigmyEmiPayModal({ pigmy, customerId }) {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/transactionSchemes/pigmyEmiTransaction`,
-        formData
+        formData,
+         {
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (response.data.success) {
         alert('Pigmy EMI processed successfully!');

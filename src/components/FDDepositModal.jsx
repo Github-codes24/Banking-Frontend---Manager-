@@ -74,7 +74,7 @@ export default function FDDepositModal({fd,customerId}) {
     return Object.keys(newErrors).length === 0;
   };
 
- 
+ const token = localStorage.getItem("token");
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -91,7 +91,12 @@ const handleSubmit = async (e) => {
     // Actual API call
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/transactionSchemes/fdTransaction`, // 🔹 replace with your backend endpoint
-      formData
+      formData,
+      {
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
     );
 
     if (response.data.success) {
@@ -123,13 +128,13 @@ const handleSubmit = async (e) => {
     setIsOpen(false);
     document.body.style.overflow = 'auto';
     // Reset form
-    setFormData({
-      customerId: '',
-      fdAccountNumber: '',
-      transactionType: 'deposit',
-      amount: '',
-      mode: ''
-    });
+    // setFormData({
+    //   customerId: '',
+    //   fdAccountNumber: '',
+    //   transactionType: 'deposit',
+    //   amount: '',
+    //   mode: ''
+    // });
     setErrors({});
     // setFdDepositModal()
   };

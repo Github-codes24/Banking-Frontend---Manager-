@@ -26,7 +26,9 @@ const AddAgent = () => {
   useEffect(() => {
     const fetchManagers = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`,{
+            headers: { Authorization: `Bearer ${token}` },
+        });
         setManagers(res.data.data || []);
       } catch (error) {
         console.error("Error fetching managers:", error);
@@ -65,7 +67,7 @@ const AddAgent = () => {
       navigate(-1);
     } catch (error) {
       console.error("Error adding agent:", error);
-      alert("Failed to add agent ❌");
+      alert(error.response.data.message||"Failed to add agent ❌");
     }
   };
 

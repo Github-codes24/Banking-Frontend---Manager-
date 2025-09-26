@@ -43,7 +43,11 @@ const EditAreaManager = () => {
     setLoading(true);
 
     axios
-      .get(`${import.meta.env.VITE_API_URL}/areaManager/${id}`)
+      .get(`${import.meta.env.VITE_API_URL}/areaManager/${id}`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
       .then((res) => {
         const customer = res.data?.data || res.data;
 
@@ -79,7 +83,11 @@ const EditAreaManager = () => {
     }
 
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/areaManager/${id}`, formData);
+      await axios.put(`${import.meta.env.VITE_API_URL}/areaManager/${id}`, formData,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       alert("Area Manager updated successfully ✅");
       navigate(-1);
     } catch (err) {

@@ -1,4 +1,4 @@
-import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaArrowLeft, FaEye, FaEyeSlash ,FaCamera, FaTimes  } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -13,10 +13,14 @@ const EditCustomer = () => {
   const [saving, setSaving] = useState(false);
   const [existingSignature, setExistingSignature] = useState(null);
 const managerId = JSON.parse(localStorage.getItem("user"))._id
+
+ const token = localStorage.getItem("token")
+ 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting }
   } = useForm({
     defaultValues: {
@@ -47,13 +51,21 @@ const managerId = JSON.parse(localStorage.getItem("user"))._id
   // add this state at top inside your component
   const [previewSignature, setPreviewSignature] = useState(null);
   const [newSignatureFile, setNewSignatureFile] = useState(null);
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
   const [customer, setCustomer] = useState({})
+ const [profilePreview, setProfilePreview] = useState(null);
+  const [newProfilePictureFile, setNewProfilePictureFile] = useState(null);
+    const profilePicture = watch("profilePicture");
   useEffect(() => {
     // Fetch customer details
     const fetchCustomer = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/customer/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/customer/${id}`,{
+          headers: {
+            Authorization: `Bearer ${token}`
+
+          },
+        });
         const customer = res.data?.data || res.data;
         setCustomer(customer)
         reset({
@@ -66,6 +78,7 @@ const managerId = JSON.parse(localStorage.getItem("user"))._id
           AadharNo: customer.AadharNo || "",
           panCard: customer.panCard || "",
           signature: customer.signature,
+          profilePicture: customer.picture,
           NomineeDetails: {
             name: customer.NomineeDetails?.name || "",
             relation: customer.NomineeDetails?.relation || "",
@@ -94,7 +107,12 @@ const managerId = JSON.parse(localStorage.getItem("user"))._id
     // Fetch agents
     const fetchAgents = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/agent?managerId=${managerId}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/agent?managerId=${managerId}`,{
+          headers: {
+            Authorization: `Bearer ${token}`
+
+          },
+        });
         setAgents(res.data?.data || res.data);
       } catch (err) {
         console.error("Error fetching agents:", err);
@@ -102,6 +120,52 @@ const managerId = JSON.parse(localStorage.getItem("user"))._id
     };
     fetchAgents();
   }, [token]);
+
+
+
+  useEffect(() => {
+  if (!profilePicture) {
+    // No new file selected, show existing picture from DB if any
+    setProfilePreview(customer?.profilePicture || null);
+    setNewProfilePictureFile(null);
+    return;
+  }
+
+  // Determine if profilePicture is a File object
+  const file = profilePicture instanceof FileList ? profilePicture[0] : profilePicture;
+
+  if (file instanceof File) {
+    // It's a new file, show preview
+    const reader = new FileReader();
+    reader.onloadend = () => setProfilePreview(reader.result);
+    reader.readAsDataURL(file);
+    setNewProfilePictureFile(file);
+  } else if (typeof profilePicture === "string") {
+    // It's an existing URL
+    setProfilePreview(profilePicture);
+    setNewProfilePictureFile(null);
+  } else {
+    // Fallback
+    setProfilePreview(customer?.profilePicture || null);
+    setNewProfilePictureFile(null);
+  }
+}, [profilePicture, customer]);
+
+
+
+
+
+
+
+  const removeProfilePicture = () => {
+    setProfilePreview(null);
+    setNewProfilePictureFile(null);
+    // Reset the file input
+    const fileInput = document.getElementById('profilePictureInput');
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
 
   const onSubmit = async (data) => {
     setSaving(true);
@@ -116,11 +180,18 @@ const managerId = JSON.parse(localStorage.getItem("user"))._id
           formData.append(key, value);
         }
       });
-
+    if (newProfilePictureFile) {
+        formData.append("picture", newProfilePictureFile);
+      }
       if (newSignatureFile) {
         formData.append("signature", newSignatureFile);
       }
-      await axios.put(`${import.meta.env.VITE_API_URL}/customer/${id}`, formData);
+      await axios.put(`${import.meta.env.VITE_API_URL}/customer/${id}`, formData,{
+          headers: {
+            Authorization: `Bearer ${token}`
+
+          },
+        });
       alert("Customer updated successfully!");
       navigate(-1);
     } catch (err) {
@@ -164,10 +235,84 @@ const managerId = JSON.parse(localStorage.getItem("user"))._id
         <form
           id="editForm"
           onSubmit={handleSubmit(onSubmit)}
-          className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 w-full"
+         className="p-8"
           encType="multipart/form-data"
         >
+
+
+           <div className="mb-8 flex flex-col items-center">
+              <h3 className="font-semibold mb-4 text-gray-700 text-center">
+                Profile Picture
+              </h3>
+
+              <div className="relative">
+                {profilePreview ? (
+                  <div className="relative">
+                    <img
+                      src={profilePreview}
+                      alt="Profile Preview"
+                      className="w-32 h-32 rounded-full object-cover border-4 border-yellow-200 shadow-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeProfilePicture}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors shadow-lg"
+                      title="Remove Picture"
+                    >
+                      <FaTimes size={12} />
+                    </button>
+                  </div>
+                ) : customer?.profilePicture ? (
+                  <div className="relative">
+                    <img
+                      src={customer.profilePicture}
+                      alt="Current Profile"
+                      className="w-32 h-32 rounded-full object-cover border-4 border-yellow-200 shadow-lg"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-32 h-32 rounded-full bg-gray-100 border-4 border-yellow-200 flex items-center justify-center shadow-lg">
+                    <FaCamera className="text-gray-400 text-2xl" />
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-4 w-full max-w-sm">
+                <input
+                  id="profilePictureInput"
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png"
+                  {...register("profilePicture", {
+                    validate: {
+                      fileType: (files) => {
+                        if (!files || !files[0]) return true; // Optional field
+                        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                        return allowedTypes.includes(files[0].type) || "Only JPG and PNG files are allowed";
+                      },
+                      fileSize: (files) => {
+                        if (!files || !files[0]) return true; // Optional field
+                        return files[0].size <= 5 * 1024 * 1024 || "File size must be less than 5MB";
+                      }
+                    }
+                  })}
+                  className={`w-full p-3 border ${errors.profilePicture
+                    ? "border-red-400"
+                    : "border-gray-200 focus:border-yellow-400"
+                    } rounded-lg bg-gray-50 outline-none duration-200`}
+                />
+                {errors.profilePicture && (
+                  <p className="text-red-500 text-xs mt-1">{errors.profilePicture.message}</p>
+                )}
+                <p className="text-xs text-gray-500 mt-1">
+                  Optional: Upload JPG or PNG (max 5MB)
+                </p>
+              </div>
+            </div>
           {/* Customer Fields */}
+
+          <div  className=" grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+
+         
           <div>
             <label className="block font-semibold text-sm mb-1 text-gray-700">
               Name
@@ -422,7 +567,7 @@ const managerId = JSON.parse(localStorage.getItem("user"))._id
               )}
             </div>
           </div>
-
+ </div>
 
           {/* Nominee Details */}
           <div className="md:col-span-2 border-t border-gray-200 mt-6 pt-4">

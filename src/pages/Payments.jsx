@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useCallback, useRef } from "react";
-import {  FaEye, FaChevronDown } from "react-icons/fa6";
+import { FaEye, FaChevronDown } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
 export default function Payments() {
@@ -14,7 +14,7 @@ export default function Payments() {
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  
+
   // Enhanced filter states
   const [selectedAgent, setSelectedAgent] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState("");
@@ -46,13 +46,14 @@ export default function Payments() {
   const areaManagerDropdownRef = useRef(null);
 
   // Predefined filter options
-   const statusOptions = ["pending", "approved", "rejected"];
+  const statusOptions = ["pending", "approved", "rejected"];
   const transactionTypeOptions = ["deposit", "withdrawal", "emi", "maturityPayout", "penality"];
-  const modeOptions = ["cash", "bankTransfer", "upi","cheque","card"];
-  const schemeTypeOptions =["FD", "RD", "LOAN", "PIGMY"];
+  const modeOptions = ["cash", "bankTransfer", "upi", "cheque", "card"];
+  const schemeTypeOptions = ["FD", "RD", "LOAN", "PIGMY"];
 
 
   const managerId = JSON.parse(localStorage.getItem("user"))._id
+  const token = localStorage.getItem("token");
 
   // Debounce search input
   useEffect(() => {
@@ -65,14 +66,28 @@ export default function Payments() {
 
   const fetchAreaManagers = async () => {
     try {
-       const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}&all=true`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}&all=true`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+
+      );
       setAreaManagers(res.data.data || []);
     } catch (err) { console.error(err); }
   };
 
   const fetchCustomers = async () => {
     try {
-       const res = await axios.get(`${import.meta.env.VITE_API_URL}/customer?managerId=${managerId}&all=true`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/customer?managerId=${managerId}&all=true`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setCustomers(res.data.data || []);
     } catch (err) { console.error(err); }
   };
@@ -103,7 +118,11 @@ export default function Payments() {
 
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/transactionSchemes/transactions`,
-        { params }
+        {
+          params, headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.data) {
@@ -119,10 +138,10 @@ export default function Payments() {
       setLoading(false);
     }
   }, [
-    debouncedSearch, 
-    page, 
-    limit, 
-    selectedAgent, 
+    debouncedSearch,
+    page,
+    limit,
+    selectedAgent,
     selectedCustomer,
     selectedAreaManager,
     selectedStatus,
@@ -131,7 +150,7 @@ export default function Payments() {
     selectedSchemeType,
     fromDate,
     toDate,
-    dateFilter, 
+    dateFilter,
     manager._id
   ]);
 
@@ -140,7 +159,12 @@ export default function Payments() {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/manager/agents/${manager._id}`,
-        { params: { all: true } }
+        {
+          params: { all: true },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setAgents(response.data?.data || []);
     } catch {
@@ -235,7 +259,11 @@ export default function Payments() {
       const body = { status, managerId: manager._id };
       await axios.post(
         `${import.meta.env.VITE_API_URL}/transactionSchemes/transaction/approvedReject/${id}`,
-        body
+        body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
       );
 
       setData((prev) =>
@@ -584,11 +612,10 @@ export default function Payments() {
                   setFromDate("");
                   setToDate("");
                 }}
-                className={`px-3 py-2 rounded font-semibold border text-xs ${
-                  dateFilter === "today"
+                className={`px-3 py-2 rounded font-semibold border text-xs ${dateFilter === "today"
                     ? "bg-yellow-400 text-white border-yellow-400"
                     : "bg-white text-gray-700 border-gray-300 hover:bg-yellow-50"
-                }`}
+                  }`}
               >
                 Today
               </button>
@@ -598,11 +625,10 @@ export default function Payments() {
                   setFromDate("");
                   setToDate("");
                 }}
-                className={`px-3 py-2 rounded font-semibold border text-xs ${
-                  dateFilter === "yesterday"
+                className={`px-3 py-2 rounded font-semibold border text-xs ${dateFilter === "yesterday"
                     ? "bg-yellow-400 text-white border-yellow-400"
                     : "bg-white text-gray-700 border-gray-300 hover:bg-yellow-50"
-                }`}
+                  }`}
               >
                 Yesterday
               </button>
@@ -709,11 +735,10 @@ export default function Payments() {
         <button
           disabled={page === 1 || loading}
           onClick={() => setPage((p) => p - 1)}
-          className={`px-4 py-1 border rounded ${
-            page === 1 || loading
+          className={`px-4 py-1 border rounded ${page === 1 || loading
               ? "opacity-50 cursor-not-allowed"
               : "hover:bg-gray-100"
-          }`}
+            }`}
         >
           Prev
         </button>
@@ -723,11 +748,10 @@ export default function Payments() {
         <button
           disabled={page === totalPages || loading}
           onClick={() => setPage((p) => p + 1)}
-          className={`px-4 py-1 border rounded ${
-            page === totalPages || loading
+          className={`px-4 py-1 border rounded ${page === totalPages || loading
               ? "opacity-50 cursor-not-allowed"
               : "hover:bg-gray-100"
-          }`}
+            }`}
         >
           Next
         </button>

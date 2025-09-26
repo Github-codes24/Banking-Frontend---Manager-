@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
-import { FaArrowLeft, FaUser, FaEnvelope, FaPhone,FaTimes,FaExclamationTriangle, FaMapMarkerAlt, FaUserTie, FaCalendarAlt, FaToggleOn, FaUsers, FaHeart, FaBirthdayCake, FaPiggyBank, FaChartLine, FaIdCard, FaCreditCard, FaPen, FaCheck, FaVenus } from "react-icons/fa";
+import { FaArrowLeft, FaUser, FaEnvelope, FaPhone, FaTimes, FaExclamationTriangle, FaMapMarkerAlt, FaUserTie, FaCalendarAlt, FaToggleOn, FaUsers, FaHeart, FaBirthdayCake, FaPiggyBank, FaChartLine, FaIdCard, FaCreditCard, FaPen, FaCheck, FaVenus } from "react-icons/fa";
 // import api from "../../api/api"; 
 import axios from "axios";
 // import { apiAgentUrl } from "../../api/apiRoutes";
@@ -27,7 +27,7 @@ function ViewAgent() {
     });
 
     const [search, setSearch] = useState("");
-
+    const token = localStorage.getItem("token");
     const fetchCustomers = async () => {
         setLoading(true);
         try {
@@ -43,7 +43,12 @@ function ViewAgent() {
 
             if (params.length > 0) url += `&${params.join("&")}`;
 
-            const res = await axios.get(url);
+            const res = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+
+                },
+            });
             setCustomers(res.data?.data || []);
             const Pagination = {
                 total: res.data.total,
@@ -60,7 +65,12 @@ function ViewAgent() {
 
     const fetchAgent = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL}/agent/${id}`);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}/agent/${id}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+
+                },
+            });
             setAgent(res.data.data || res.data); // ✅ backend ke response ke hisaab se
         } catch (error) {
             console.error("Error fetching agent data:", error);

@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function CreatePigmyForm() {
   const { customerId } = useParams();
   const navigate = useNavigate();
-
+  const token = localStorage.getItem("token");
   const [formData, setFormData] = useState({
     type: "savings",
     pigmyDailyDeposit: "",
@@ -48,7 +48,12 @@ export default function CreatePigmyForm() {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/customer/createPigmy/${customerId}`,
-        formData
+        formData,
+        {
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.data.success) {

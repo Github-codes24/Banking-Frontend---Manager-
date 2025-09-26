@@ -61,7 +61,7 @@ export default function LoanEmiPayModal({ loan, customerId }) {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+const token = localStorage.getItem("token");
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -74,7 +74,12 @@ export default function LoanEmiPayModal({ loan, customerId }) {
 
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/transactionSchemes/loanEmiTransaction`,
-        formData
+        formData,
+         {
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.data.success) {

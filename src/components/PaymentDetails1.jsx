@@ -9,14 +9,19 @@ const PaymentDetails1 = () => {
   const [error, setError] = useState("");
 const navigate = useNavigate()
   const { id } = useParams();
-
+  const token = localStorage.getItem("token");
   const fetchTransaction = async () => {
     try {
       setLoading(true);
       setError("");
 
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/transactionSchemes/transaction/getByid/${id}`
+        `${import.meta.env.VITE_API_URL}/transactionSchemes/transaction/getByid/${id}`,
+        {
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (res.data.success) {

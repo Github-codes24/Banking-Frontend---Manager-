@@ -31,7 +31,7 @@ export default function CreateLoan() {
       }));
     }
   };
-
+  const token = localStorage.getItem("token");
   const validateForm = () => {
     const newErrors = {};
 
@@ -62,7 +62,12 @@ export default function CreateLoan() {
 
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/customer/createLoan/${customerId}`,
-        formData
+        formData,
+         {
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.data.success) {

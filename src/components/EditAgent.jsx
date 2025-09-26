@@ -26,7 +26,12 @@ const EditAgent = () => {
   const [agent, setAgent] = useState({})
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/agent/${id}`)
+      .get(`${import.meta.env.VITE_API_URL}/agent/${id}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+
+                },
+            })
       .then((res) => {
         const customer = res.data.data || res.data;
         setAgent(customer)
@@ -66,7 +71,12 @@ const EditAgent = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`)
+      .get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+
+                },
+            })
       .then((res) => setManagers(res.data.data || res.data))
       .catch((err) => console.error("Error fetching managers:", err));
   }, [token]);
@@ -87,7 +97,12 @@ const EditAgent = () => {
       formData.append("signature", newSignatureFile);
     }
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/agent/${id}`, formData);
+      await axios.put(`${import.meta.env.VITE_API_URL}/agent/${id}`, formData,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+
+                },
+            });
       alert("Agent updated successfully ✅");
       navigate(-1);
     } catch (error) {
