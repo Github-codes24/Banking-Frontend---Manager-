@@ -49,7 +49,7 @@ export default function Payments() {
   const statusOptions = ["pending", "approved", "rejected"];
   const transactionTypeOptions = ["deposit", "withdrawal", "emi", "maturityPayout", "penality"];
   const modeOptions = ["cash", "bankTransfer", "upi", "cheque", "card"];
-  const schemeTypeOptions = ["FD", "RD", "LOAN", "PIGMY"];
+ const schemeTypeOptions = ["FD", "RD", "LOAN", "PIGMY","SAVING_ACCOUNT"];
 
 
   const managerId = JSON.parse(localStorage.getItem("user"))._id
@@ -644,6 +644,7 @@ export default function Payments() {
             <tr>
               <th className="px-4 py-2 border">Sr.</th>
               <th className="px-4 py-2 border">Date</th>
+              <th className="px-4 py-2 border">Account Type</th>
               <th className="px-4 py-2 border">Ledger No</th>
               <th className="px-4 py-2 border">Customer</th>
               <th className="px-4 py-2 border">Amount</th>
@@ -684,6 +685,7 @@ export default function Payments() {
                   <td className="px-4 py-2 border">
                     {new Date(trx.date).toLocaleDateString()}
                   </td>
+                  <td className="px-4 py-2 border">{trx.schemeType}</td>
                   <td className="px-4 py-2 border">{trx.accountNumber}</td>
                   <td className="px-4 py-2 border">
                     {trx.customerId?.name || "N/A"}
