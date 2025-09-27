@@ -1,10 +1,9 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { FaBan, FaEye, FaPen, FaTrash, FaUnlock } from "react-icons/fa";
+import { useEffect, useState, useRef } from "react";
+import { FaBan, FaEye, FaPen, FaTrash, FaUnlock, FaChevronDown, FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 import DeletePopup from "../modal/DeletePopup";
-
 
 export default function Agent() {
   const [data, setData] = useState([]);
@@ -23,7 +22,16 @@ export default function Agent() {
   const [deleteId, setDeleteId] = useState(null);
   const token = localStorage.getItem("token");
   const [areaManagerId, setAreaManagerId] = useState("");
-  const manager = JSON.parse(localStorage.getItem("user"))
+  const manager = JSON.parse(localStorage.getItem("user"));
+
+  // Area Manager dropdown search functionality
+  const [areaManagers, setAreaManagers] = useState([]);
+  const [filteredAreaManagers, setFilteredAreaManagers] = useState([]);
+  const [areaManagerSearch, setAreaManagerSearch] = useState("");
+  const [selectedAreaManager, setSelectedAreaManager] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
   // fetch data
   const fetchData = async () => {
     setLoading(true);
@@ -35,7 +43,6 @@ export default function Agent() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
 
       if (response.data?.data) {
         setData(response.data.data);
@@ -52,21 +59,62 @@ export default function Agent() {
     }
   };
 
-  const [areaManagers, setAreaManagers] = useState([]);
-  const managerId = JSON.parse(localStorage.getItem("user"))._id
+  const managerId = JSON.parse(localStorage.getItem("user"))._id;
   const fetchAreaManagers = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`, {
         headers: {
           Authorization: `Bearer ${token}`
-
         },
       });
-      setAreaManagers(res.data.data || []);
+      const managers = res.data.data || [];
+      setAreaManagers(managers);
+      setFilteredAreaManagers(managers);
     } catch (error) {
       console.error("Error fetching area managers:", error);
     }
   };
+
+  // Handle area manager search
+  const handleAreaManagerSearch = (searchTerm) => {
+    setAreaManagerSearch(searchTerm);
+    const filtered = areaManagers.filter(manager =>
+      manager.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredAreaManagers(filtered);
+  };
+
+  // Handle area manager selection
+  const handleAreaManagerSelect = (manager) => {
+    setSelectedAreaManager(manager);
+    setAreaManagerId(manager._id);
+    setAreaManagerSearch(manager.name);
+    setIsDropdownOpen(false);
+    setPage(1);
+  };
+
+  // Clear area manager selection
+  const clearAreaManagerSelection = () => {
+    setSelectedAreaManager(null);
+    setAreaManagerId("");
+    setAreaManagerSearch("");
+    setFilteredAreaManagers(areaManagers);
+    setPage(1);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -79,7 +127,6 @@ export default function Agent() {
       await axios.delete(`${import.meta.env.VITE_API_URL}/agent/${deleteId}`, {
         headers: {
           Authorization: `Bearer ${token}`
-
         },
       });
       alert("Agent deleted successfully ✅");
@@ -93,8 +140,6 @@ export default function Agent() {
     }
   };
 
-
-
   if (error) {
     return (
       <p className="text-center text-red-500">
@@ -103,25 +148,22 @@ export default function Agent() {
     );
   }
 
-
   const handelBlock = async (agentId) => {
     try {
       const confirmBlock = window.confirm("Are you sure you want to block this agent?");
-      if (!confirmBlock) return; // stop if cancelled
+      if (!confirmBlock) return;
 
       const res = await axios.get(
         `${import.meta.env.VITE_API_URL}/manager/agent/block/${agentId}`, {
         headers: {
           Authorization: `Bearer ${token}`
-
         },
       }
       );
 
       if (res.data.success) {
-        fetchData()
+        fetchData();
         alert("Agent blocked successfully");
-        // 🔄 optionally refetch agents list here
       } else {
         alert(res.data.message || "Failed to block agent");
       }
@@ -134,21 +176,19 @@ export default function Agent() {
   const handelUnBlock = async (agentId) => {
     try {
       const confirmUnblock = window.confirm("Are you sure you want to unblock this agent?");
-      if (!confirmUnblock) return; // stop if cancelled
+      if (!confirmUnblock) return;
 
       const res = await axios.get(
         `${import.meta.env.VITE_API_URL}/manager/agent/unblock/${agentId}`, {
         headers: {
           Authorization: `Bearer ${token}`
-
         },
       }
       );
 
       if (res.data.success) {
-        fetchData()
+        fetchData();
         alert("Agent unblocked successfully");
-        // 🔄 optionally refetch agents list here
       } else {
         alert(res.data.message || "Failed to unblock agent");
       }
@@ -157,7 +197,6 @@ export default function Agent() {
       alert("Something went wrong while unblocking agent");
     }
   };
-
 
   return (
     <div>
@@ -178,28 +217,82 @@ export default function Agent() {
           type="text"
           value={search}
           onChange={(e) => {
-            setPage(1); // reset page on new search
+            setPage(1);
             setSearch(e.target.value);
           }}
           placeholder="Search agent (name/contact)"
           className="border border-gray-400 px-3 py-1 rounded w-64"
         />
 
-        <select
-          value={areaManagerId}
-          onChange={(e) => {
-            setAreaManagerId(e.target.value);
-            setPage(1);
-          }}
-          className="border border-gray-400 px-3 py-1 rounded"
-        >
-          <option value="">All Area Managers</option>
-          {areaManagers.map((am) => (
-            <option key={am._id} value={am._id}>
-              {am.name}
-            </option>
-          ))}
-        </select>
+        {/* Custom Searchable Dropdown for Area Manager */}
+        <div className="relative" ref={dropdownRef}>
+          <div className="relative">
+            <input
+              type="text"
+              value={areaManagerSearch}
+              onChange={(e) => {
+                handleAreaManagerSearch(e.target.value);
+                setIsDropdownOpen(true);
+              }}
+              onFocus={() => setIsDropdownOpen(true)}
+              placeholder="Search Area Manager..."
+              className="border border-gray-400 px-3 py-2 pr-8 rounded w-64 focus:outline-none focus:border-blue-500"
+            />
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <FaChevronDown 
+                className={`text-gray-400 transition-transform duration-200 ${
+                  isDropdownOpen ? 'rotate-180' : ''
+                }`} 
+                size={12} 
+              />
+            </div>
+          </div>
+
+          {/* Dropdown Menu */}
+          {isDropdownOpen && (
+            <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+              {/* Clear option */}
+              <div
+                onClick={clearAreaManagerSelection}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 text-gray-600"
+              >
+                <span className="font-medium">All Area Managers</span>
+              </div>
+              
+              {/* Area Manager Options */}
+              {filteredAreaManagers.length > 0 ? (
+                filteredAreaManagers.map((manager) => (
+                  <div
+                    key={manager._id}
+                    onClick={() => handleAreaManagerSelect(manager)}
+                    className={`px-4 py-2 hover:bg-blue-50 cursor-pointer ${
+                      selectedAreaManager?._id === manager._id ? 'bg-blue-100' : ''
+                    }`}
+                  >
+                    <div className="font-medium">{manager.name}</div>
+                    {manager.email && (
+                      <div className="text-sm text-gray-600">{manager.email}</div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className="px-4 py-2 text-gray-500">
+                  No area managers found
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Clear selection button */}
+        {selectedAreaManager && (
+          <button
+            onClick={clearAreaManagerSelection}
+            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm"
+          >
+            Clear Filter
+          </button>
+        )}
       </div>
 
       {/* Table */}
@@ -269,8 +362,6 @@ export default function Agent() {
                           <FaUnlock size={16} />
                         </button>
                       )}
-
-
                     </div>
                   </td>
                 </tr>
