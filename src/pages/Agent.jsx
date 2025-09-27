@@ -21,20 +21,20 @@ export default function Agent() {
   // delete modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
- const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const [areaManagerId, setAreaManagerId] = useState("");
   const manager = JSON.parse(localStorage.getItem("user"))
   // fetch data
   const fetchData = async () => {
     setLoading(true);
     try {
-    const response = await axios.get(
-  `${import.meta.env.VITE_API_URL}/manager/agents/${manager._id}`,
-  {
-    params: { search, page, limit, areaManagerId },
-    headers: { Authorization: `Bearer ${token}` },
-  }
-);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/manager/agents/${manager._id}`,
+        {
+          params: { search, page, limit, areaManagerId },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
 
       if (response.data?.data) {
@@ -56,12 +56,12 @@ export default function Agent() {
   const managerId = JSON.parse(localStorage.getItem("user"))._id
   const fetchAreaManagers = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`,{
-                headers: {
-                    Authorization: `Bearer ${token}`
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/areaManager?managerId=${managerId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
 
-                },
-            });
+        },
+      });
       setAreaManagers(res.data.data || []);
     } catch (error) {
       console.error("Error fetching area managers:", error);
@@ -76,12 +76,12 @@ export default function Agent() {
   // delete
   const handleDelete = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/agent/${deleteId}`,{
-                headers: {
-                    Authorization: `Bearer ${token}`
+      await axios.delete(`${import.meta.env.VITE_API_URL}/agent/${deleteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
 
-                },
-            });
+        },
+      });
       alert("Agent deleted successfully ✅");
 
       setData((prev) => prev.filter((item) => item._id !== deleteId));
@@ -110,12 +110,12 @@ export default function Agent() {
       if (!confirmBlock) return; // stop if cancelled
 
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/manager/agent/block/${agentId}`,{
-                headers: {
-                    Authorization: `Bearer ${token}`
+        `${import.meta.env.VITE_API_URL}/manager/agent/block/${agentId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
 
-                },
-            }
+        },
+      }
       );
 
       if (res.data.success) {
@@ -137,12 +137,12 @@ export default function Agent() {
       if (!confirmUnblock) return; // stop if cancelled
 
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/manager/agent/unblock/${agentId}`,{
-                headers: {
-                    Authorization: `Bearer ${token}`
+        `${import.meta.env.VITE_API_URL}/manager/agent/unblock/${agentId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
 
-                },
-            }
+        },
+      }
       );
 
       if (res.data.success) {
