@@ -419,7 +419,7 @@ function ViewAgent() {
                                         <td className="px-4 py-2 border">
                                             <div className="flex gap-2">
                                                 <Link
-                                                    to={`/coustomers/viewdetails/${cust._id}`}
+                                                    to={`/customers/view/${cust._id}`}
                                                     className="bg-yellow-400 hover:bg-yellow-500 text-white p-2 rounded"
                                                     title="View"
                                                 >

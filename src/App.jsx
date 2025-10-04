@@ -29,6 +29,8 @@ import CreateFDForm from './components/CreateFDForm';
 import CreateRDForm from './components/CreateRdForm';
 import CreateLoan from './components/CreateLoan';
 import CreatePigmyForm from './components/CreatePigmyForm';
+import CreateLakhpatiSchem from './components/CreateLakhpatiSchem';
+import CreateMipForm from './components/CreateMipForm';
 
 
 function App() {
@@ -90,7 +92,7 @@ function App() {
             }
           />
           <Route
-            path="/create-fd/:customerId"
+            path="/create-fd/:customerId/:savingAc"
             element={
               <ProtectedRoute>
                 <Layout>
@@ -100,7 +102,7 @@ function App() {
             }
           />
           <Route
-            path="/create-rd/:customerId"
+            path="/create-rd/:customerId/:savingAc"
             element={
               <ProtectedRoute>
                 <Layout>
@@ -110,7 +112,7 @@ function App() {
             }
           />
           <Route
-            path="/create-loan/:customerId"
+            path="/create-loan/:customerId/:savingAc"
             element={
               <ProtectedRoute>
                 <Layout>
@@ -120,7 +122,27 @@ function App() {
             }
           />
           <Route
-            path="/create-pigmy/:customerId"
+            path="/create-lakhpati/:customerId/:savingAc"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CreateLakhpatiSchem/>
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-mip/:customerId/:savingAc"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CreateMipForm/>
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-pigmy/:customerId/:savingAc"
             element={
               <ProtectedRoute>
                 <Layout>

@@ -6,6 +6,12 @@ import FDDepositModal from "./FDDepositModal";
 import RDEmiPayModal from "./RDEmiPayModal";
 import LoanEmiPayModal from "./LoanEmiPayModal";
 import PigmyEmiPayModal from "./PigmyEmiPayModal";
+import FDMaturityModal from "../modal/FDMaturityModal";
+import RdMaturityModal from "../modal/RdMaturityModal";
+import PigmyMaturityModal from "../modal/PigmyMaturityModal";
+import LakhpatiEmiPayModal from "../modal/LakhpatiEmiPayModal";
+import LakhpatiMaturityModal from "../modal/LakhpatiMaturityModal";
+import MipMaturityModal from "../modal/MipMaturityModal";
 // import { apiCustomerUrl } from "../../api/apiRoutes";
 
 function CustomerDetails() {
@@ -16,29 +22,29 @@ function CustomerDetails() {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
- const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token")
 
-    const fetchDetails = async () => {
-      try {
-        setLoading(true);
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/customer/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
+  const fetchDetails = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/customer/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
 
-          },
-        });
-        if (res.data.success) {
-          setCustomer(res.data.data); // customer info
-          setAccounts(res.data.data.accounts || []); // accounts list
-        } else {
-          setError("Customer not found");
-        }
-      } catch (err) {
-        setError("Failed to fetch customer details");
-      } finally {
-        setLoading(false);
+        },
+      });
+      if (res.data.success) {
+        setCustomer(res.data.data); // customer info
+        setAccounts(res.data.data.accounts || []); // accounts list
+      } else {
+        setError("Customer not found");
       }
-    };
+    } catch (err) {
+      setError("Failed to fetch customer details");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // ✅ Fetch customer details
   useEffect(() => {
@@ -103,13 +109,13 @@ function CustomerDetails() {
             {/* Customer Information */}
             <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
               <div className="flex items-center mb-6">
-                         <div className="bg-orange-100 p-1 rounded-full mr-4 w-20 h-20 flex items-center justify-center overflow-hidden">
-  <img
-    src={customer?.picture}
-    alt="Profile"
-    className="w-full h-full object-cover rounded-full"
-  />
-</div>
+                <div className="bg-orange-100 p-1 rounded-full mr-4 w-20 h-20 flex items-center justify-center overflow-hidden">
+                  <img
+                    src={customer?.picture}
+                    alt="Profile"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </div>
                 <h2 className="text-2xl font-bold text-gray-800">Customer Information</h2>
               </div>
 
@@ -180,105 +186,105 @@ function CustomerDetails() {
             </div>
 
             {/* Account & Document Information */}
-                <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                               <div className="flex items-center mb-6">
-                                 <div className="bg-blue-100 p-3 rounded-full mr-4">
-                                   <FaIdCard className="text-blue-600 text-2xl" />
-                                 </div>
-                                 <h2 className="text-2xl font-bold text-gray-800">Account & Document Details</h2>
-                               </div>
-                 
-                               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                 <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                                   <FaPiggyBank className="text-blue-500 mr-3" />
-                                   <div className="flex-1">
-                                     <span className="text-sm font-medium text-gray-600">Saving Account Number</span>
-                                     <p className="text-gray-800 font-semibold">{customer?.savingAccountNumber || "Not Assigned"}</p>
-                                   </div>
-                                 </div>
-          
-                                   {/* Saving Account Balance */}
-            <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-              <FaPiggyBank className="text-green-500 mr-3" />
-              <div className="flex-1">
-                <span className="text-sm font-medium text-gray-600">Saving Account Balance</span>
-                <p className="text-gray-800 font-semibold">
-                  {customer?.savingAccountBalance != null
-                    ? `₹${Number(customer.savingAccountBalance).toLocaleString('en-IN')}`
-                    : "0"}
-                </p>
+            <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+              <div className="flex items-center mb-6">
+                <div className="bg-blue-100 p-3 rounded-full mr-4">
+                  <FaIdCard className="text-blue-600 text-2xl" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-800">Account & Document Details</h2>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
+                  <FaPiggyBank className="text-blue-500 mr-3" />
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-gray-600">Saving Account Number</span>
+                    <p className="text-gray-800 font-semibold">{customer?.savingAccountNumber || "Not Assigned"}</p>
+                  </div>
+                </div>
+
+                {/* Saving Account Balance */}
+                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
+                  <FaPiggyBank className="text-green-500 mr-3" />
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-gray-600">Saving Account Balance</span>
+                    <p className="text-gray-800 font-semibold">
+                      {customer?.savingAccountBalance != null
+                        ? `₹${Number(customer.savingAccountBalance).toLocaleString('en-IN')}`
+                        : "0"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
+                  <FaIdCard className="text-blue-500 mr-3" />
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-gray-600">Aadhar Number</span>
+                    <p className="text-gray-800 font-semibold">
+                      {customer?.AadharNo || "N/A"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
+                  <FaCreditCard className="text-blue-500 mr-3" />
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-gray-600">PAN Card</span>
+                    <p className="text-gray-800 font-semibold">
+                      {customer?.panCard || "N/A"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
+                  <FaPen className="text-blue-500 mr-3" />
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-gray-600">Signature</span>
+                    <div className="mt-2">
+                      {customer?.signature ? (
+                        <div className="flex items-center space-x-2">
+                          <FaCheck className="text-green-500" />
+                          <span className="text-green-600 font-medium">Uploaded</span>
+                          <a href={customer?.signature} target="blank" className="text-blue-500 hover:text-blue-700 underline text-sm">
+                            View
+                          </a>
+                        </div>
+                      ) : (
+                        <div className="flex items-center space-x-2">
+                          <FaTimes className="text-red-500" />
+                          <span className="text-red-600 font-medium">Not Uploaded</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
+                  <FaCalendarAlt className="text-blue-500 mr-3" />
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-gray-600">Opening Date</span>
+                    <p className="text-gray-800 font-semibold">
+                      {customer?.createdAt ? new Date(customer.createdAt).toLocaleDateString('en-IN') : "N/A"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
+                  <FaToggleOn className="text-blue-500 mr-3" />
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-gray-600">Account Status</span>
+                    <div className="flex items-center mt-1">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${customer?.savingAccountStatus == 'active'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                        }`}>
+                        {customer?.savingAccountStatus == "active" ? 'Active' : 'Closed'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-                 
-                                 <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                                   <FaIdCard className="text-blue-500 mr-3" />
-                                   <div className="flex-1">
-                                     <span className="text-sm font-medium text-gray-600">Aadhar Number</span>
-                                     <p className="text-gray-800 font-semibold">
-                                       {customer?.AadharNo || "N/A"}
-                                     </p>
-                                   </div>
-                                 </div>
-                 
-                                 <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                                   <FaCreditCard className="text-blue-500 mr-3" />
-                                   <div className="flex-1">
-                                     <span className="text-sm font-medium text-gray-600">PAN Card</span>
-                                     <p className="text-gray-800 font-semibold">
-                                       {customer?.panCard || "N/A"}
-                                     </p>
-                                   </div>
-                                 </div>
-                 
-                                 <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                                   <FaPen className="text-blue-500 mr-3" />
-                                   <div className="flex-1">
-                                     <span className="text-sm font-medium text-gray-600">Signature</span>
-                                     <div className="mt-2">
-                                       {customer?.signature ? (
-                                         <div className="flex items-center space-x-2">
-                                           <FaCheck className="text-green-500" />
-                                           <span className="text-green-600 font-medium">Uploaded</span>
-                                           <a href={customer?.signature} target="blank" className="text-blue-500 hover:text-blue-700 underline text-sm">
-                                             View
-                                           </a>
-                                         </div>
-                                       ) : (
-                                         <div className="flex items-center space-x-2">
-                                           <FaTimes className="text-red-500" />
-                                           <span className="text-red-600 font-medium">Not Uploaded</span>
-                                         </div>
-                                       )}
-                                     </div>
-                                   </div>
-                                 </div>
-                 
-                                 <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                                   <FaCalendarAlt className="text-blue-500 mr-3" />
-                                   <div className="flex-1">
-                                     <span className="text-sm font-medium text-gray-600">Opening Date</span>
-                                     <p className="text-gray-800 font-semibold">
-                                       {customer?.createdAt ? new Date(customer.createdAt).toLocaleDateString('en-IN') : "N/A"}
-                                     </p>
-                                   </div>
-                                 </div>
-                 
-                                 <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                                   <FaToggleOn className="text-blue-500 mr-3" />
-                                   <div className="flex-1">
-                                     <span className="text-sm font-medium text-gray-600">Account Status</span>
-                                     <div className="flex items-center mt-1">
-                                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${customer?.savingAccountStatus =='active'
-                                         ? 'bg-green-100 text-green-800'
-                                         : 'bg-red-100 text-red-800'
-                                         }`}>
-                                         {customer?.savingAccountStatus=="active" ? 'Active' : 'Closed'}
-                                       </span>
-                                     </div>
-                                   </div>
-                                 </div>
-                               </div>
-                             </div>
 
             {/* Nominee Information */}
             <div className="bg-white rounded-2xl shadow-lg p-8">
@@ -392,7 +398,12 @@ function CustomerDetails() {
             {customer?.fdSchemes?.length > 0 &&
               <div className="flex gap-2 items-center">
                 {/* FD Deposit Button/Modal */}
-
+                <Link
+                  to={`/create-fd/${customer.CustomerId}/${customer.savingAccountNumber}`}
+                  className="bg-green-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition duration-200"
+                >
+                  Create New FD +
+                </Link>
 
                 {/* Payment Details Link */}
                 <Link
@@ -401,6 +412,7 @@ function CustomerDetails() {
                 >
                   Payment Details
                 </Link>
+
               </div>
 
             }
@@ -410,96 +422,133 @@ function CustomerDetails() {
             <>
 
               <div className="grid gap-6">
-  {customer?.fdSchemes?.length > 0 ? (
-    customer.fdSchemes.map((fd, i) => (
-      <div
-        key={i}
-        className="border-2 border-green-200 rounded-xl p-6 bg-green-50 hover:shadow-lg transition-shadow"
-      >
-        <div className="grid md:grid-cols-3 gap-6">
-          {/* Column 1 */}
-          <div className="space-y-3">
-            <div>
-              <span className="text-sm font-medium text-gray-600">FD Account No</span>
-              <p className="text-lg font-bold text-gray-800">{fd.fdAccountNumber || "N/A"}</p>
-            </div>
-            <div>
-              <span className="text-sm font-medium text-gray-600">Principal Amount</span>
-              <p className="text-xl font-bold text-green-600">
-                ₹{fd.fdPrincipalAmount ? fd.fdPrincipalAmount.toLocaleString() : "0"}
-              </p>
-            </div>
-            <div>
-              <span className="text-sm font-medium text-gray-600">Deposit Amount</span>
-              <p className="text-lg font-semibold text-gray-800">
-                ₹{fd.fdDepositAmount ? fd.fdDepositAmount.toLocaleString() : "0"}
-              </p>
-            </div>
-          </div>
+                {customer?.fdSchemes?.length > 0 ? (
+                  customer.fdSchemes.map((fd, i) => (
+                    <div
+                      key={i}
+                      className="border-2 border-green-200 rounded-xl p-6 bg-green-50 hover:shadow-lg transition-shadow"
+                    >
+                      <div className="grid md:grid-cols-3 gap-6">
+                        {/* Column 1 */}
+                        <div className="space-y-3">
+                          <div>
+                            <span className="text-sm font-medium text-gray-600">FD Account No</span>
+                            <p className="text-lg font-bold text-gray-800">{fd.fdAccountNumber || "N/A"}</p>
+                          </div>
+                          <div>
+                            <span className="text-sm font-medium text-gray-600">Principal Amount</span>
+                            <p className="text-xl font-bold text-green-600">
+                              ₹{fd.fdPrincipalAmount ? fd.fdPrincipalAmount : "0"}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-sm font-medium text-gray-600">Deposit Amount</span>
+                            <p className="text-lg font-semibold text-gray-800">
+                              ₹{fd.fdDepositAmount ? fd.fdDepositAmount : "0"}
+                            </p>
+                          </div>
+                        </div>
 
-          {/* Column 2 */}
-          <div className="space-y-3">
-            <div>
-              <span className="text-sm font-medium text-gray-600">Interest Rate</span>
-              <p className="text-lg font-bold text-blue-600">{fd.fdInterestRate || 0}% p.a.</p>
-            </div>
-            <div>
-              <span className="text-sm font-medium text-gray-600">Tenure</span>
-              <p className="text-lg font-semibold text-gray-800">
-                {fd.fdTenure || "N/A"} {fd.fdTenureType || ""}
-              </p>
-            </div>
-            <div>
-              <span className="text-sm font-medium text-gray-600">Opening Date</span>
-              <p className="text-lg font-semibold text-gray-800">
-                {fd.fdOpeningDate ? new Date(fd.fdOpeningDate).toLocaleDateString() : "N/A"}
-              </p>
-            </div>
-          </div>
+                        {/* Column 2 */}
+                        <div className="space-y-3">
+                          <div>
+                            <span className="text-sm font-medium text-gray-600">Interest Rate</span>
+                            <p className="text-lg font-bold text-blue-600">{fd.fdInterestRate || 0}% p.a.</p>
+                          </div>
+                          <div>
+                            <span className="text-sm font-medium text-gray-600">Tenure</span>
+                            <p className="text-lg font-semibold text-gray-800">
+                              {fd.fdTenure || "N/A"} {fd.fdTenureType || ""}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-sm font-medium text-gray-600">Opening Date</span>
+                            <p className="text-lg font-semibold text-gray-800">
+                              {fd.fdOpeningDate ? new Date(fd.fdOpeningDate).toLocaleString("en-IN", {
+                                day: "2-digit",
+                                month: "short",      // "Jun"
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true         // 12-hour format with AM/PM
+                              }) : "N/A"}
+                            </p>
+                          </div>
+                        </div>
 
-          {/* Column 3 */}
-          <div className="space-y-3">
-            <div>
-              <span className="text-sm font-medium text-gray-600">Maturity Date</span>
-              <p className="text-lg font-semibold text-gray-800">
-                {fd.fdMaturityDate ? new Date(fd.fdMaturityDate).toLocaleDateString() : "N/A"}
-              </p>
-            </div>
-            <div>
-              <span className="text-sm font-medium text-gray-600">Maturity Amount</span>
-              <p className="text-xl font-bold text-green-600">
-                ₹{fd.fdMaturityAmount ? fd.fdMaturityAmount.toLocaleString() : "0"}
-              </p>
-            </div>
-            <div>
-              <span className="text-sm font-medium text-gray-600">Status</span>
-              <span
-                className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${
-                  fd.fdAccountStatus === "Active"
-                    ? "bg-green-200 text-green-800"
-                    : fd.fdAccountStatus === "Matured"
-                    ? "bg-blue-200 text-blue-800"
-                    : "bg-red-200 text-red-800"
-                }`}
-              >
-                {fd.fdAccountStatus || "Unknown"}
-              </span>
-            </div>
-          </div>
-        </div>
+                        {/* Column 3 */}
+                        <div className="space-y-3">
+                          <div>
+                            <span className="text-sm font-medium text-gray-600">Maturity Date</span>
+                            <p className="text-lg font-semibold text-gray-800">
+                              {fd.fdMaturityDate ? new Date(fd.fdMaturityDate).toLocaleString("en-IN", {
+                                day: "2-digit",
+                                month: "short",      // "Jun"
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true         // 12-hour format with AM/PM
+                              }) : "N/A"}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-sm font-medium text-gray-600">Maturity Amount</span>
+                            <p className="text-xl font-bold text-green-600">
+                              ₹{fd.fdMaturityAmount ? fd.fdMaturityAmount : "0"}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-sm font-medium text-gray-600">Status</span>
+                            <span
+                              className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${fd.fdAccountStatus === "active"
+                                ? "bg-green-200 text-green-800"
+                                : fd.fdAccountStatus === "matured"
+                                  ? "bg-blue-200 text-blue-800"
+                                  : fd.fdAccountStatus === "pending"
+                                    ? "bg-yellow-200 text-yellow-800"
+                                    : "bg-red-200 text-red-800"
+                                }`}
+                            >
+                              {fd.fdAccountStatus || "Unknown"}
+                              {fd.fdCloseDate && (
+                                <span className="block text-xs font-normal text-gray-700">
+                                  {new Date(fd.fdCloseDate).toLocaleString("en-IN", {
+                                    day: "2-digit",
+                                    month: "short",      // "Jun"
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true         // 12-hour format with AM/PM
+                                  })}
+                                </span>
+                              )}
+                            </span>
 
-        {/* Actions */}
-        {fd.fdDepositAmount==0 && 
-          <div className="mt-6 flex justify-left text-left">
-          <FDDepositModal fd={fd} customerId={customer._id}  />
-        </div>
-        }
-      </div>
-    ))
-  ) : (
-    <p className="text-gray-500 italic">No FD Schemes found.</p>
-  )}
-</div>
+
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      {fd.fdDepositAmount == 0 &&
+                        <div className="mt-6 flex justify-left text-left">
+                          <FDDepositModal fd={fd} customerId={customer._id} savingAc={customer.savingAccountNumber} />
+                        </div>
+
+
+                      }
+
+                      {fd.fdAccountStatus !== "closed" && fd.fdDepositAmount > 0 &&
+                        <div className="mt-6 flex justify-left text-left">
+                          <FDMaturityModal customer={customer} fdAccountNumber={fd.fdAccountNumber} />
+                        </div>
+                      }
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500 italic">No FD Schemes found.</p>
+                )}
+              </div>
 
             </>
           )
@@ -514,7 +563,8 @@ function CustomerDetails() {
                 {/* Create FD Link/Button */}
                 <div className="mt-6">
                   <Link
-                    to={`/create-fd/${customer.CustomerId}`}
+
+                    to={`/create-fd/${customer.CustomerId}/${customer.savingAccountNumber}`}
                     className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                   >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -548,10 +598,21 @@ function CustomerDetails() {
             </div>
 
             {customer?.rdSchemes?.length > 0 &&
-              <div>
+              <div className="flex gap-2 items-center">
+
+                <Link
+                  to={`/create-rd/${customer.CustomerId}/${customer.savingAccountNumber}`}
+                  className="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Create New RD
+                </Link>
+
                 <Link
                   to={`/coustomers/paymentdetails/${id}/RD`}
-                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition duration-200"
+                  className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                 >
                   Payment Details
                 </Link>
@@ -576,7 +637,11 @@ function CustomerDetails() {
                       </div>
                       <div>
                         <span className="text-sm font-medium text-gray-600">Total Installments</span>
-                        <p className="text-lg font-semibold text-gray-800">{rd.rdTotalInstallments||0}</p>
+                        <p className="text-lg font-semibold text-gray-800">{rd.rdTotalInstallments || 0}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Total Installments Left</span>
+                        <p className="text-lg font-semibold text-gray-800">{rd.rdTotalInstallments - rd.rdTotalDepositedInstallment || 0}</p>
                       </div>
                     </div>
 
@@ -588,20 +653,47 @@ function CustomerDetails() {
                       <div>
                         <span className="text-sm font-medium text-gray-600">Opening Date</span>
                         <p className="text-lg font-semibold text-gray-800">
-                          {rd.rdOpeningDate ? new Date(rd.rdOpeningDate).toLocaleDateString() : "N/A"}
+                          {rd.rdOpeningDate ? new Date(rd.rdOpeningDate).toLocaleString("en-IN", {
+                            day: "2-digit",
+                            month: "short",      // "Jun"
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true         // 12-hour format with AM/PM
+                          }) : "N/A"}
                         </p>
                       </div>
                       <div>
                         <span className="text-sm font-medium text-gray-600">Maturity Date</span>
                         <p className="text-lg font-semibold text-gray-800">
-                          {rd.rdMaturityDate ? new Date(rd.rdMaturityDate).toLocaleDateString() : "N/A"}
+                          {rd.rdMaturityDate ? new Date(rd.rdMaturityDate).toLocaleString("en-IN", {
+                            day: "2-digit",
+                            month: "short",      // "Jun"
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true         // 12-hour format with AM/PM
+                          }) : "N/A"}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Last Emi Paid</span>
+                        <p className="text-lg font-semibold text-gray-800">
+                          {rd.rdLastEmiDate ? new Date(rd.rdLastEmiDate).toLocaleString("en-IN", {
+                            day: "2-digit",
+                            month: "short",      // "Jun"
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true         // 12-hour format with AM/PM
+                          }) : "N/A"}
                         </p>
                       </div>
                     </div>
                     <div className="space-y-3">
                       <div>
                         <span className="text-sm font-medium text-gray-600">RD Total DepositedtAmount</span>
-                        <p className="text-lg font-bold text-blue-600">{rd.rdTotalDepositedtAmount||0}</p>
+                        <p className="text-lg font-bold text-blue-600">{rd.rdTotalDepositedtAmount || 0}</p>
                       </div>
                       <div>
                         <span className="text-sm font-medium text-gray-600">RD Total DepositedInstallment</span>
@@ -610,9 +702,24 @@ function CustomerDetails() {
                         </p>
                       </div>
                       <div>
-                        <span className="text-sm font-medium text-gray-600">RD Tenure Type</span>
+                        <span className="text-sm font-medium text-gray-600">RD Tenure </span>
                         <p className="text-lg font-semibold text-gray-800">
-                          {rd.rdTenureType || "N/A"}
+                          {(rd.rdTenure && rd.rdTenureType) ? `${rd.rdTenure} ${rd.rdTenureType}` : "N/A"}
+
+                        </p>
+                      </div>
+
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Next Emi Date</span>
+                        <p className="text-lg font-semibold text-gray-800">
+                          {rd.rdNextEmiDate ? new Date(rd.rdNextEmiDate).toLocaleString("en-IN", {
+                            day: "2-digit",
+                            month: "short",      // "Jun"
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true         // 12-hour format with AM/PM
+                          }) : "N/A"}
                         </p>
                       </div>
                     </div>
@@ -624,25 +731,51 @@ function CustomerDetails() {
                       </div>
                       <div>
                         <span className="text-sm font-medium text-gray-600">Status</span>
-                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${rd.rdAccountStatus === 'Active'
-                          ? 'bg-green-200 text-green-800'
-                          : rd.rdAccountStatus === 'Matured'
-                            ? 'bg-blue-200 text-blue-800'
-                            : 'bg-red-200 text-red-800'
+                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${rd.rdAccountStatus === "active"
+                          ? "bg-green-200 text-green-800"
+                          : rd.rdAccountStatus === "matured"
+                            ? "bg-blue-200 text-blue-800"
+                            : rd.rdAccountStatus === "pending"
+                              ? "bg-yellow-200 text-yellow-800"
+                              : "bg-red-200 text-red-800"
                           }`}>
                           {rd.rdAccountStatus}
+                          {rd.rdCloseDate && (
+                            <span className="block text-xs font-normal text-gray-700">
+                              {new Date(rd.rdCloseDate).toLocaleString("en-IN", {
+                                day: "2-digit",
+                                month: "short",      // "Jun"
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true         // 12-hour format with AM/PM
+                              })}
+                            </span>
+                          )}
                         </span>
                       </div>
                     </div>
                   </div>
 
 
-                   <div className="mt-6 flex justify-left text-left">
-          <RDEmiPayModal rd={rd} customerId={customer._id}  />
-        </div>
+                  <div className="mt-6 flex gap-2">
+                    {rd.rdAccountStatus !== "closed" && rd.rdAccountStatus !== "matured" &&
+                      <div className="mt-6 flex justify-left text-left">
+                        <RDEmiPayModal rd={rd} customerId={customer._id} savingAc={customer.savingAccountNumber} />
+                      </div>
+
+
+                    }
+
+                    {rd.rdAccountStatus !== "closed" && rd.rdTotalDepositedtAmount > 0 &&
+                      <div className="mt-6 flex justify-left text-left">
+                        <RdMaturityModal customer={customer} rdAccountNumber={rd.rdAccountNumber} />
+                      </div>
+                    }
+                  </div>
                 </div>
 
-        
+
               ))}
             </div>
           ) : (
@@ -653,7 +786,7 @@ function CustomerDetails() {
 
               <div className="mt-6">
                 <Link
-                  to={`/create-rd/${customer.CustomerId}`}
+                  to={`/create-rd/${customer.CustomerId}/${customer.savingAccountNumber}`}
                   className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -680,10 +813,20 @@ function CustomerDetails() {
             </div>
 
             {customer?.loans?.length > 0 &&
-              <div>
+              <div className="flex gap-2 items-center">
+
+                <Link
+                  to={`/create-loan/${customer.CustomerId}/${customer.savingAccountNumber}`}
+                  className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Create New Loan
+                </Link>
                 <Link
                   to={`/coustomers/paymentdetails/${id}/LOAN`}
-                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition duration-200"
+                  className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                 >
                   Payment Details
                 </Link>
@@ -778,9 +921,9 @@ function CustomerDetails() {
                   </div>
 
 
-                        <div className="mt-6 flex justify-left text-left">
-          <LoanEmiPayModal loan={loan} customerId={customer._id}  />
-        </div>
+                  <div className="mt-6 flex justify-left text-left">
+                    <LoanEmiPayModal loan={loan} customerId={customer._id} />
+                  </div>
                 </div>
               ))}
             </div>
@@ -788,11 +931,11 @@ function CustomerDetails() {
             <div className="text-center py-12">
               <div className="text-gray-400 text-6xl mb-4">📈</div>
               <h4 className="text-xl font-semibold text-gray-600 mb-2">No Loan Found</h4>
-              <p className="text-gray-500">This customer doesn't have any RD schemes yet.</p>
+              <p className="text-gray-500">This customer doesn't have any LOAN  yet.</p>
 
               <div className="mt-6">
                 <Link
-                  to={`/create-loan/${customer.CustomerId}`}
+                  to={`/create-loan/${customer.CustomerId}/${customer.savingAccountNumber}`}
                   className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -815,7 +958,18 @@ function CustomerDetails() {
             </div>
 
             {customer?.pigmy?.length > 0 &&
-              <div>
+              <div className="flex gap-1">
+
+
+                <Link
+                  to={`/create-pigmy/${customer.CustomerId}/${customer.savingAccountNumber}`}
+                  className="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Create New Pigmy
+                </Link>
                 <Link
                   to={`/coustomers/paymentdetails/${id}/PIGMY`}
                   className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition duration-200"
@@ -860,15 +1014,33 @@ function CustomerDetails() {
                         <p className="text-lg font-bold text-blue-600">{pigmy.pigMyInterestRate}% p.a.</p>
                       </div>
                       <div>
+                        <span className="text-sm font-medium text-gray-600">Duration</span>
+                        <p className="text-lg font-bold text-blue-600">{pigmy.pigMyTenure} Months</p>
+                      </div>
+                      <div>
                         <span className="text-sm font-medium text-gray-600">Opening Date</span>
                         <p className="text-lg font-semibold text-gray-800">
-                          {pigmy.pigMyOpeningDate ? new Date(pigmy.pigMyOpeningDate).toLocaleDateString() : "N/A"}
+                          {pigmy.pigMyOpeningDate ? new Date(pigmy.pigMyOpeningDate).toLocaleDateString("en-IN", {
+                            day: "2-digit",
+                            month: "short",      // "Jun"
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true         // 12-hour format with AM/PM
+                          }) : "N/A"}
                         </p>
                       </div>
                       <div>
                         <span className="text-sm font-medium text-gray-600">Maturity Date</span>
                         <p className="text-lg font-semibold text-gray-800">
-                          {pigmy.pigMyMaturityDate ? new Date(pigmy.pigMyMaturityDate).toLocaleDateString() : "N/A"}
+                          {pigmy.pigMyMaturityDate ? new Date(pigmy.pigMyMaturityDate).toLocaleDateString("en-IN", {
+                            day: "2-digit",
+                            month: "short",      // "Jun"
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true         // 12-hour format with AM/PM
+                          }) : "N/A"}
                         </p>
                       </div>
 
@@ -897,13 +1069,25 @@ function CustomerDetails() {
                                             </div> */}
                       <div>
                         <span className="text-sm font-medium text-gray-600">Status</span>
-                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${pigmy.pigMyAccountStatus === 'active'
+                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${pigmy.pigmyAccount === 'active'
                           ? 'bg-green-200 text-green-800'
-                          : pigmy.pigMyAccountStatus === 'matured'
+                          : pigmy.pigmyAccount === 'matured'
                             ? 'bg-blue-200 text-blue-800'
                             : 'bg-red-200 text-red-800'
                           }`}>
-                          {pigmy.pigMyAccountStatus}
+                          {pigmy.pigmyAccount}
+                          {pigmy?.pigMyCloseDate && (
+                            <span className="block text-xs font-normal text-gray-700">
+                              {new Date(pigmy.pigMyCloseDate).toLocaleString("en-IN", {
+                                day: "2-digit",
+                                month: "short",      // "Jun"
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true         // 12-hour format with AM/PM
+                              })}
+                            </span>
+                          )}
                         </span>
                       </div>
 
@@ -915,9 +1099,19 @@ function CustomerDetails() {
                     </div>
                   </div>
 
-                             <div className="mt-6 flex justify-left text-left">
-          <PigmyEmiPayModal pigmy={pigmy} customerId={customer._id}  />
-        </div>
+                  <div className="mt-6 flex justify-left text-left">
+                    {pigmy.pigmyAccount !== "closed" && pigmy.pigmyAccount !== "matured" &&
+                      <PigmyEmiPayModal pigmy={pigmy} customerId={customer._id} />
+                    }
+
+
+
+                    {pigmy.pigmyAccount !== "closed" && pigmy.pigMyTotalDepositedAmount > 0 &&
+                      <div className=" flex justify-left text-left">
+                        <PigmyMaturityModal customer={customer} pigMyAccountNumber={pigmy.pigMyAccountNumber} />
+                      </div>
+                    }
+                  </div>
                 </div>
               ))}
             </div>
@@ -925,10 +1119,10 @@ function CustomerDetails() {
             <div className="text-center py-12">
               <div className="text-gray-400 text-6xl mb-4">📈</div>
               <h4 className="text-xl font-semibold text-gray-600 mb-2">No PIGMY Deposit Schemes Found</h4>
-              <p className="text-gray-500">This customer doesn't have any RD schemes yet.</p>
+              <p className="text-gray-500">This customer doesn't have any PIGMY schemes yet.</p>
 
               <Link
-                to={`/create-pigmy/${customer.CustomerId}`}
+                to={`/create-pigmy/${customer.CustomerId}/${customer.savingAccountNumber}`}
                 className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -939,6 +1133,393 @@ function CustomerDetails() {
             </div>
           )}
         </div>
+
+
+        {/* if lakhpati  */}
+        <div className="bg-white rounded-2xl mb-8 shadow-lg p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="bg-purple-100 p-3 flex gap-3 items-center rounded-full mr-4">
+              <FaChartLine className="text-purple-600 text-2xl" />
+              <h3 className="text-2xl font-bold text-gray-800">Lakhpati  Account </h3>
+            </div>
+
+            {customer?.lakhpatiSchemes?.length > 0 &&
+              <div className="flex gap-1">
+
+
+                <Link
+                  to={`/create-lakhpati/${customer.CustomerId}/${customer.savingAccountNumber}`}
+                  className="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Create New Lakhpati schems
+                </Link>
+                <Link
+                  to={`/coustomers/paymentdetails/${id}/Lakhpati`}
+                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition duration-200"
+                >
+                  Payment Details
+                </Link>
+
+              </div>
+            }
+          </div>
+
+          {customer?.lakhpatiSchemes?.length > 0 ? (
+            <div className="grid gap-6">
+              {customer.lakhpatiSchemes.map((lakhpatiSchemes, i) => (
+                <div key={i} className="border-2 border-purple-200 rounded-xl p-6 bg-purple-50 hover:shadow-lg transition-shadow">
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="space-y-3">
+                      {/* <div>
+                        <span className="text-sm font-medium text-gray-600">Pigmy Type</span>
+                        <p className="text-lg font-bold text-gray-800">{lakhpatiSchemes.type}</p>
+                      </div> */}
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Lakhpati Account No</span>
+                        <p className="text-lg font-bold text-gray-800">{lakhpatiSchemes.lakhpatiYojanaAccountNumber}</p>
+                      </div>
+
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">InstallMents Deposit Per Month</span>
+                        <p className="text-lg font-semibold text-gray-800">₹{lakhpatiSchemes.lakhpatiYojanaInstallAmount}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Maturity Amount</span>
+                        <p className="text-lg font-semibold text-gray-800">
+                          ₹{lakhpatiSchemes.lakhpatiYojanaMaturityAmount || "N/A"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      {/* <div>
+                        <span className="text-sm font-medium text-gray-600">Interest Rate</span>
+                        <p className="text-lg font-bold text-blue-600">{pigmy.pigMyInterestRate}% p.a.</p>
+                      </div> */}
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Duration</span>
+                        <p className="text-lg font-bold text-blue-600">{lakhpatiSchemes.lakhpatiYojanaTenure} {lakhpatiSchemes.lakhpatiYojanaTenureType} </p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Opening Date</span>
+                        <p className="text-lg font-semibold text-gray-800">
+                          {lakhpatiSchemes.lakhpatiYojanaOpeningDate ? new Date(lakhpatiSchemes.lakhpatiYojanaOpeningDate).toLocaleDateString("en-IN", {
+                            day: "2-digit",
+                            month: "short",      // "Jun"
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true         // 12-hour format with AM/PM
+                          }) : "N/A"}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Maturity Date</span>
+                        <p className="text-lg font-semibold text-gray-800">
+                          {lakhpatiSchemes.lakhpatiYojanaMaturityDate ? new Date(lakhpatiSchemes.lakhpatiYojanaMaturityDate).toLocaleDateString("en-IN", {
+                            day: "2-digit",
+                            month: "short",      // "Jun"
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true         // 12-hour format with AM/PM
+                          }) : "N/A"}
+                        </p>
+                      </div>
+
+
+                    </div>
+                    <div className="space-y-3">
+                      <div>
+                        <span className="text-sm font-medium text-gray-600"> Total Installment Paid</span>
+                        <p className="text-lg font-bold text-blue-600">₹{lakhpatiSchemes.lakhpatiYojanaTotalDepositedAmount}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-600"> Total No. InstallMent Deposited</span>
+                        <p className="text-lg font-semibold text-gray-800">
+                          {lakhpatiSchemes.lakhpatiYojanaTotalDepositedInstallments || "N/A"}
+                        </p>
+                      </div>
+
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Next Emi Date</span>
+                        <p className="text-lg font-semibold text-gray-800">
+                          {lakhpatiSchemes.lakhpatiYojnaNextEmiDate ? new Date(lakhpatiSchemes.lakhpatiYojnaNextEmiDate).toLocaleDateString("en-IN", {
+                            day: "2-digit",
+                            month: "short",      // "Jun"
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true         // 12-hour format with AM/PM
+                          }) : "N/A"}
+                        </p>
+                      </div>
+                      {/* <div>
+                                                <span className="text-sm font-medium text-gray-600">Total Emi Left </span>
+                                                <p className="text-lg font-semibold text-gray-800">
+                                                    {loan.loanRemainingEmis || "N/A"}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <span className="text-sm font-medium text-gray-600">Next Emi Date</span>
+                                                <p className="text-xl font-bold text-purple-600">{new Date(loan.loanNextEmiDate).toDateString()}</p>
+                                            </div> */}
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Status</span>
+                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${lakhpatiSchemes.lakhpatiYojanaAccountStatus === 'active'
+                          ? 'bg-green-200 text-green-800'
+                          : lakhpatiSchemes.lakhpatiYojanaAccountStatus === 'matured'
+                            ? 'bg-blue-200 text-blue-800'
+                            : 'bg-red-200 text-red-800'
+                          }`}>
+                          {lakhpatiSchemes.lakhpatiYojanaAccountStatus}
+                          {lakhpatiSchemes?.lakhpatiYojanaCloseDate && (
+                            <span className="block text-xs font-normal text-gray-700">
+                              {new Date(lakhpatiSchemes.lakhpatiYojanaCloseDate).toLocaleString("en-IN", {
+                                day: "2-digit",
+                                month: "short",      // "Jun"
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true         // 12-hour format with AM/PM
+                              })}
+                            </span>
+                          )}
+                        </span>
+                      </div>
+
+                    </div>
+
+                    <div className="space-y-3">
+
+
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex justify-left text-left">
+                    {lakhpatiSchemes.lakhpatiYojanaAccountStatus !== "closed" && lakhpatiSchemes.lakhpatiYojanaAccountStatus !== "matured" &&
+                      <LakhpatiEmiPayModal lakhpatiSchemes={lakhpatiSchemes} customerId={customer._id} savingAc={customer.savingAccountNumber} />
+                    }
+
+
+
+                    {lakhpatiSchemes.lakhpatiYojanaAccountStatus !== "closed" && lakhpatiSchemes.lakhpatiYojanaTotalDepositedAmount > 0 &&
+                      <div className=" flex justify-left text-left">
+                        <LakhpatiMaturityModal customer={customer} lakhpatiYojanaAccountNumber={lakhpatiSchemes.lakhpatiYojanaAccountNumber} />
+                      </div>
+                    }
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-gray-400 text-6xl mb-4">📈</div>
+              <h4 className="text-xl font-semibold text-gray-600 mb-2">No Lakhpati Deposit Schemes Found</h4>
+              <p className="text-gray-500">This customer doesn't have any Lakhpati schemes yet.</p>
+
+              <Link
+                to={`/create-lakhpati/${customer._id}/${customer.savingAccountNumber}`}
+                className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Create New Lakhpati
+              </Link>
+            </div>
+          )}
+        </div>
+ {/* if MIP  */}
+
+
+       <div className="bg-white rounded-2xl mb-8 shadow-lg p-8">
+  <div className="flex items-center justify-between mb-6">
+    <div className="bg-purple-100 p-3 flex gap-3 items-center rounded-full mr-4">
+      <FaChartLine className="text-purple-600 text-2xl" />
+      <h3 className="text-2xl font-bold text-gray-800">MIP Account</h3>
+    </div>
+
+    {customer?.mipSchemes?.length > 0 && (
+      <div className="flex gap-1">
+        <Link
+          to={`/create-mip/${customer.CustomerId}/${customer.savingAccountNumber}`}
+          className="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+        >
+          <svg
+            className="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          Create New MIP Scheme
+        </Link>
+
+        <Link
+          to={`/coustomers/paymentdetails/${customer._id}/MIP`}
+          className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md transition duration-200"
+        >
+          Payment Details
+        </Link>
+      </div>
+    )}
+  </div>
+
+  {customer?.mipSchemes?.length > 0 ? (
+    <div className="grid gap-6">
+      {customer.mipSchemes.map((mipScheme, i) => (
+        <div
+          key={i}
+          className="border-2 border-purple-200 rounded-xl p-6 bg-purple-50 hover:shadow-lg transition-shadow"
+        >
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="space-y-3">
+              <div>
+                <span className="text-sm font-medium text-gray-600">MIP Account No</span>
+                <p className="text-lg font-bold text-gray-800">{mipScheme.mipAccountNumber}</p>
+              </div>
+              <div>
+                <span className="text-sm font-medium text-gray-600">Deposit Amount</span>
+                <p className="text-lg font-semibold text-gray-800">₹{mipScheme.mipDepositAmount}</p>
+              </div>
+              <div>
+                <span className="text-sm font-medium text-gray-600">Maturity Amount</span>
+                <p className="text-lg font-semibold text-gray-800">
+                  ₹{mipScheme.mipMaturityAmount || "N/A"}
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <span className="text-sm font-medium text-gray-600">Duration</span>
+                <p className="text-lg font-bold text-blue-600">
+                  {mipScheme.mipTenure} {mipScheme.mipTenureType}
+                </p>
+              </div>
+              <div>
+                <span className="text-sm font-medium text-gray-600">Opening Date</span>
+                <p className="text-lg font-semibold text-gray-800">
+                  {mipScheme.mipOpeningDate
+                    ? new Date(mipScheme.mipOpeningDate).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })
+                    : "N/A"}
+                </p>
+              </div>
+              <div>
+                <span className="text-sm font-medium text-gray-600">Maturity Date</span>
+                <p className="text-lg font-semibold text-gray-800">
+                  {mipScheme.mipMaturityDate
+                    ? new Date(mipScheme.mipMaturityDate).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })
+                    : "N/A"}
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <span className="text-sm font-medium text-gray-600">Monthly Interest Pay</span>
+                <p className="text-lg font-bold text-blue-600">₹{mipScheme.mipMonthlyInterestPay}</p>
+              </div>
+              <div>
+                <span className="text-sm font-medium text-gray-600">Status</span>
+                <span
+                  className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${
+                    mipScheme.mipAccountStatus === "active"
+                      ? "bg-green-200 text-green-800"
+                      : mipScheme.mipAccountStatus === "matured"
+                      ? "bg-blue-200 text-blue-800"
+                      : "bg-red-200 text-red-800"
+                  }`}
+                >
+                  {mipScheme.mipAccountStatus}
+                  {mipScheme?.mipCloseDate && (
+                    <span className="block text-xs font-normal text-gray-700">
+                      {new Date(mipScheme.mipCloseDate).toLocaleString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </span>
+                  )}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-left text-left gap-4">
+            {/* {mipScheme.mipAccountStatus !== "closed" &&
+              mipScheme.mipAccountStatus !== "matured" && (
+                <MipEmiPayModal mipScheme={mipScheme} customerId={customer._id} savingAc={customer.savingAccountNumber} />
+              )} */}
+
+            {mipScheme.mipAccountStatus !== "closed" &&
+              mipScheme.mipDepositAmount > 0 && (
+                <MipMaturityModal mipScheme={mipScheme} customer={customer} />
+              )}
+          </div>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="text-center py-12">
+      <div className="text-gray-400 text-6xl mb-4">📈</div>
+      <h4 className="text-xl font-semibold text-gray-600 mb-2">
+        No MIP Deposit Schemes Found
+      </h4>
+      <p className="text-gray-500">
+        This customer doesn't have any MIP schemes yet.
+      </p>
+
+      <Link
+        to={`/create-mip/${customer._id}/${customer.savingAccountNumber}`}
+        className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md mt-4"
+      >
+        <svg
+          className="w-5 h-5 mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 4v16m8-8H4"
+          />
+        </svg>
+        Create New MIP
+      </Link>
+    </div>
+  )}
+</div>
+
 
       </div>
     </div>
