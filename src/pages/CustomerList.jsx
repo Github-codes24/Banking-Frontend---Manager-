@@ -215,7 +215,7 @@ export default function CustomerList() {
   return (
     <div className="p-5">
       {/* Header */}
-      <div className="flex flex-col p-3 bg-[#dc5212] sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+      <div className="flex flex-col p-3 rounded-md bg-[#dc5212] sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
         <h2 className="text-lg sm:text-xl font-bold">Customer Management</h2>
         <Link to="/customers/add" className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded text-sm">
           Add Customer
