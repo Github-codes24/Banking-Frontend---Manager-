@@ -44,20 +44,20 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed z-40 top-0 left-0 h-full w-[220px] bg-[#fef7ef] drop-shadow-sm p-4 transition-transform transform ${
+        className={`fixed z-40 top-0 left-0 h-full w-[220px] bg-[#dc5212] drop-shadow-sm p-4 transition-transform transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:static lg:block`}
       >
         <nav className="flex flex-col space-y-3 mt-12 lg:mt-0">
           {navItems.map((item, i) => (
-            <NavLink
+          <NavLink
               key={i}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2 text-sm font-semibold border rounded-md transition ${
+                `flex items-center gap-3 px-4 py-2 text-sm bg-white font-semibold border rounded-md transition ${
                   isActive
-                    ? "bg-red-600 text-white"
-                    : "text-red-600 border-red-300 hover:bg-red-50"
+                    ? "bg-red-500"
+                    : "text-red-500 border-red-300 hover:bg-red-50"
                 }`
               }
               onClick={() => setIsOpen(false)} // close on mobile after click
@@ -70,7 +70,7 @@ const Sidebar = () => {
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-2 text-sm font-semibold border rounded-md text-red-600 border-red-300 hover:bg-red-50 transition"
+            className="flex items-center gap-3 px-4 py-2 text-sm font-semibold border rounded-md text-white   transition"
           >
             <FaSignOutAlt />
             Logout

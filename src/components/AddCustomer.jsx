@@ -97,10 +97,10 @@ const AddCustomer = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-yellow-50 to-white py-10 px-4">
+    <div className="min-h-screen bg-gradient-to-r from-yellow-50 to-white p-5">
       <div className="w-full mx-auto shadow-lg rounded-xl bg-white">
         {/* Header */}
-        <div className="flex  justify-between border-b px-6 py-2 rounded-t-xl bg-gradient-to-r from-yellow-100 via-yellow-50 to-white">
+        <div className="flex  justify-between border-b px-6 py-2 rounded-t-xl bg-gradient-to-r bg-[#dc5212]">
           <div className="flex  gap-2">
             <button
               onClick={() => navigate(-1)}

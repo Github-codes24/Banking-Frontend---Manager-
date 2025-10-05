@@ -80,8 +80,8 @@ const managerId =JSON.parse( localStorage.getItem("user"))._id
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-4">
+      <div className="flex p-3 bg-[#dc5212] justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Area Manager Management</h2>
         <Link
           to="/area-manager/add"
