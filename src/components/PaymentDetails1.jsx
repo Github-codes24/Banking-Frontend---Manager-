@@ -102,7 +102,7 @@ const PaymentDetails1 = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-white shadow-lg rounded-xl p-6 mb-6">
-          <div className="flex bg-[#dc5212] p-2 items-center gap-4 mb-4">
+          <div className="flex bg-gradient-to-br from-orange-500 via-red-500 to-red-600 p-2 rounded-md items-center gap-4 mb-4">
             <button
               onClick={() => navigate(-1)}
               className="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors duration-200"

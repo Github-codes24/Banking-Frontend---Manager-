@@ -5,7 +5,7 @@ const Header = () => {
 
 
   return (
-    <header className="bg-[#dc5212] z-50  drop-shadow-sm py-3 px-4 flex flex-wrap md:flex-nowrap justify-between items-center gap-2">
+    <header className="bg-gradient-to-br from-orange-500 via-red-500 to-red-600 z-50  drop-shadow-sm py-3 px-4 flex flex-wrap md:flex-nowrap justify-between items-center gap-2">
       <div className="flex justify-center items-center md:w-20 md:h-20 sm:w-12 sm:h-12 border-2 border-red-400 rounded-full bg-gray-100 cursor-pointer">
         <Link className="" to="/settings/profilepage"  >
           <img

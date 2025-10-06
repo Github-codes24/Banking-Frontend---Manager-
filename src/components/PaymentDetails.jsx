@@ -51,7 +51,7 @@ const token = localStorage.getItem("token");
   return (
     <>
       {/* Header */}
-      <div className="bg-[#dc5212] p-4 flex items-center gap-2">
+      <div className="bg-gradient-to-br from-orange-500 via-red-500 to-red-600 rounded-md p-4 flex items-center gap-2">
         <button
           onClick={() => navigate(-1)}
           className="text-black p-1 border-2 rounded-4xl"
