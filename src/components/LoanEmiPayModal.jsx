@@ -152,6 +152,28 @@ const token = localStorage.getItem("token");
 
             {/* Modal Body */}
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
+
+              <div>
+                <label
+                  htmlFor="loan type"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Loan Type
+                </label>
+                <input
+                  type="text"
+                  id="loanType"
+                  name="loanAccountNumber"
+                  value={loan.loanType+ " " +"Loan"}
+                  disabled
+                
+                  className={`w-full px-4 py-3 text-red-600 capitalize border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                    errors.loanAccountNumber ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="e.g., LN1758360434566"
+                />
+             
+              </div>
               {/* Loan Account Number */}
               <div>
                 <label

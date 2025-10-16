@@ -181,10 +181,10 @@ export default function CreateLakhpatiSchem() {
     }`}
   >
     <option value="">-- Select Installment Amount --</option>
-    <option value="1350">₹1350</option>
-    <option value="1650">₹1650</option>
-    <option value="2400">₹2400</option>
     <option value="3740">₹3740</option>
+        <option value="2400">₹2400</option>
+     <option value="1650">₹1650</option>
+      <option value="1350">₹1350</option>
     {/* <option value="10000">₹10000</option> */}
   </select>
   {errors.InstallAmount && (
